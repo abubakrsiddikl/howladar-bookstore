@@ -2,12 +2,13 @@ import { validateRequest } from "./../../middlewares/validateRequest";
 import express from "express";
 import { BookController } from "./book.controller";
 import { createBookZodSchema } from "./book.validation";
+import { authenticate, authorize } from "../auth/auth.middleware";
 
 const router = express.Router();
 // create a book
 router.post(
   "/",
-  validateRequest(createBookZodSchema),
+  validateRequest(createBookZodSchema),authenticate,authorize("admin"),
   BookController.createBook
 );
 
