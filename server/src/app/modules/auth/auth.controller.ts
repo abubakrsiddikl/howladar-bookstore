@@ -12,7 +12,6 @@ export const AuthController = {
   },
   loginUser: async (req: Request, res: Response) => {
     try {
-      console.log("auth controller loginUser", req);
       const { token, user } = await AuthService.loginUser(
         req.body.email,
         req.body.password

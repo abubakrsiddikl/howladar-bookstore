@@ -3,6 +3,8 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import { BookRoutes } from "./app/modules/books/book.route";
 import { AuthRoutes } from "./app/modules/auth/auth.route";
+import { UserRoutes } from "./app/modules/users/user.route";
+import { OrderRoutes } from "./app/modules/orders/order.route";
 
 const app: Application = express();
 
@@ -12,6 +14,8 @@ app.use(cookieParser());
 
 app.use("/api/v1/books", BookRoutes);
 app.use("/api/v1/auth", AuthRoutes);
+app.use("/api/v1/users", UserRoutes);
+app.use("/api/v1/orders", OrderRoutes);
 
 app.get("/", (req: Request, res: Response) => {
   res.json({ message: "📚  howladar bookstore server server is running!" });
