@@ -4,6 +4,7 @@ import { User } from "./user.model";
 import bcrypt from "bcrypt";
 import config from "../../../config";
 import { verifyGoogleToken } from "../../utils/googleAuth";
+import { verifyToken } from "../../utils/verifyToken";
 
 export const AuthService = {
   registerUser: async (payload: IUser) => {
@@ -19,6 +20,14 @@ export const AuthService = {
       email: user.email,
       role: user.role,
     };
+  },
+  // get logged in user
+  getUserFromToken: async (token: string) => {
+    const decoded = verifyToken(token);
+    if (!decoded || !decoded.userId) return null;
+
+    const user = await User.findById(decoded.userId).select("-password");
+    return user;
   },
 
   loginUser: async (email: string, password: string) => {

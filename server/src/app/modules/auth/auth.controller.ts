@@ -10,6 +10,27 @@ export const AuthController = {
       res.status(400).json({ success: false, message: error.message });
     }
   },
+  // ! get current user
+  getCurrentUser: async (req: Request, res: Response) => {
+    try {
+      const token = req.cookies.token;
+      if (!token) {
+        res.status(401).json({ success: false, message: "Unauthorized" });
+        return;
+      }
+
+      const user = await AuthService.getUserFromToken(token);
+      if (!user) {
+        res.status(401).json({ success: false, message: "Invalid token" });
+        return;
+      }
+
+      res.json({ success: true, isLoggedIn: true, user });
+    } catch (error) {
+      res.status(500).json({ success: false, message: "Server error" });
+    }
+  },
+
   loginUser: async (req: Request, res: Response) => {
     try {
       const { token, user } = await AuthService.loginUser(
