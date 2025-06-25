@@ -16,8 +16,8 @@ router.post(
 router.post("/login", AuthController.loginUser);
 
 // google login
-
-router.post("/google-login", AuthController.googleLogin);
+router.get("/google", AuthController.googleAuthRedirect);
+router.get("/google/callback", AuthController.googleCallback);
 
 // logOut user
 router.post("/logout", AuthController.logoutUser);

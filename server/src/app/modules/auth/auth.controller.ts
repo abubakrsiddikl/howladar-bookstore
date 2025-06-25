@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { AuthService } from "./auth.service";
+import config from "../../../config";
 
 export const AuthController = {
   registerUser: async (req: Request, res: Response) => {
@@ -56,27 +57,26 @@ export const AuthController = {
     });
     res.json({ success: true, message: "Logged out successfully" });
   },
-  googleLogin: async (req: Request, res: Response) => {
-    try {
-      const { token } = req.body;
-      console.log("jwt tokne google login", token);
-      if (!token) {
-        res.status(400).json({ message: "No token provided" });
-        return;
-      }
+  googleAuthRedirect: (req: Request, res: Response) => {
+    const redirectURL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${config.google_client_id}&redirect_uri=${config.google_redirect_uri}&response_type=code&scope=email%20profile`;
+    res.redirect(redirectURL);
+  },
 
-      const { token: jwtToken, user } = await AuthService.googleLogin(token);
+  // 🔹  callback handler
+  googleCallback: async (req: Request, res: Response) => {
+    const code = req.query.code as string;
 
-      res
-        .cookie("token", jwtToken, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
-          sameSite: "strict",
-          maxAge: 7 * 24 * 60 * 60 * 1000,
-        })
-        .json({ message: "Login successful", user });
-    } catch (error: any) {
-      res.status(500).json({ message: error.message || "Google login failed" });
-    }
+    const result = await AuthService.handleGoogleAuth(code);
+
+    const { token, ...user } = result;
+
+    res
+      .cookie("token", token, {
+        httpOnly: true,
+        secure: config.env === "production",
+        sameSite: "lax",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      })
+      .redirect(`${config.client_url}/dashboard`);
   },
 };

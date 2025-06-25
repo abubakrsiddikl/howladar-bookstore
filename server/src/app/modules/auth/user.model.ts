@@ -14,12 +14,18 @@ const UserSchema = new Schema<IUser>(
     },
     password: {
       type: String,
-      required: true,
+      required: function () {
+        return !this.isGoogleUser;
+      },
     },
     role: {
       type: String,
       enum: ["admin", "store-manager", "customer"],
       default: "customer",
+    },
+    isGoogleUser: {
+      type: Boolean,
+      default: false,
     },
   },
   {

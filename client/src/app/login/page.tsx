@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { axiosSecure } from "@/lib/axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import GoogleLoginButton from "@/components/GoogleLoginButton";
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Valid email address" }),
@@ -100,6 +101,7 @@ export default function LoginPage() {
           {serverError && (
             <p className="text-center text-red-500 text-sm">{serverError}</p>
           )}
+          <GoogleLoginButton></GoogleLoginButton>
         </form>
       </div>
     </div>

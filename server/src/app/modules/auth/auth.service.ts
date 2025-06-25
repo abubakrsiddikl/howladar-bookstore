@@ -5,6 +5,8 @@ import bcrypt from "bcrypt";
 import config from "../../../config";
 import { verifyGoogleToken } from "../../utils/googleAuth";
 import { verifyToken } from "../../utils/verifyToken";
+import axios from "axios";
+
 
 export const AuthService = {
   registerUser: async (payload: IUser) => {
@@ -59,36 +61,50 @@ export const AuthService = {
       { expiresIn: "7d" }
     );
   },
-  googleLogin: async (token: string) => {
-    // ১. Google token verify করা
-    const { email, name, sub } = await verifyGoogleToken(token);
-    if (!email || !sub) {
-      throw new Error("Invalid Google token");
-    }
+  handleGoogleAuth: async (code: string) => {
+    // Exchange code for access_token
+    const tokenRes = await axios.post(
+      `https://oauth2.googleapis.com/token`,
+      {
+        client_id: config.google_client_id,
+        client_secret: config.google_client_secret,
+        redirect_uri: config.google_redirect_uri,
+        grant_type: "authorization_code",
+        code,
+      },
+      { headers: { "Content-Type": "application/json" } }
+    );
 
-    //    find user is exists or not
+    const access_token = tokenRes.data.access_token;
+
+    // Get user info
+    const { data: userInfo } = await axios.get("https://www.googleapis.com/oauth2/v2/userinfo", {
+      headers: { Authorization: `Bearer ${access_token}` },
+    });
+
+    const { email, name } = userInfo;
+
     let user = await User.findOne({ email });
+
     if (!user) {
-      //   create user
       user = await User.create({
-        name,
         email,
-        googleId: sub,
+        name,
         role: "customer",
-        password: "",
+        isGoogleUser: true,
       });
     }
-    // genrate jwt token
-    const jwtToken = AuthService.generateToken(user);
 
-    return {
-      token: jwtToken,
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
+    const token = jwt.sign(
+      {
+        userId: user._id,
         role: user.role,
+        email: user.email,
       },
-    };
+      config.jwt_secret,
+      { expiresIn: "7d" }
+    );
+
+    return { token, user };
   },
 };

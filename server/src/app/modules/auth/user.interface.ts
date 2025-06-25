@@ -6,6 +6,7 @@ export interface IUser {
   email: string;
   password: string;
   role: IUserRole;
+  isGoogleUser: boolean;
 }
 
 export interface AuthUserPayload extends IUser {
