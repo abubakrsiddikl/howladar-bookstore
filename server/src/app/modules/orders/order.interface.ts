@@ -1,19 +1,27 @@
-// src/modules/order/order.interface.ts
 import { Types } from "mongoose";
 
-export interface IOrderBook {
-  bookId: Types.ObjectId;
+export interface IOrderItem {
+  book: string;
   quantity: number;
 }
 
+export interface IShippingInfo {
+  name: string;
+  email: string;
+  address: string;
+  phone: string;
+}
+
+export type IPaymentMethod = "COD" | "SSLCommerz";
+
 export interface IOrder {
   user: Types.ObjectId;
-  books: IOrderBook[];
-  address: string;
-  paymentMethod: "sslcommerz" | "cash-on-delivery";
-  isPaid?: boolean;
-  transactionId?: string;
-  status?: "pending" | "processing" | "completed" | "cancelled";
+  items: IOrderItem[];
+  shippingInfo: IShippingInfo;
+  paymentMethod: IPaymentMethod;
+  paymentStatus: "Paid" | "Pending";
+  totalAmount: number;
+  orderStatus: "Processing" | "Delivered" | "Cancelled";
   createdAt?: Date;
   updatedAt?: Date;
 }

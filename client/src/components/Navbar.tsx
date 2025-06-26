@@ -7,7 +7,7 @@ import React from "react";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
-  console.log(user)
+  console.log(user);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -51,6 +51,7 @@ const Navbar = () => {
               Logout
             </button>
           )}
+          {navLink("/register", "Register")}
         </div>
       </div>
     </nav>

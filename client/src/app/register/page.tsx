@@ -36,8 +36,12 @@ export default function RegisterPage() {
         toast.success("Your account create successfull");
         router.push("/login");
       }
-    } catch (error: any) {
-      setServerError(error.response?.data?.message || "Something went wrong");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setServerError(error.message || "Something went wrong");
+      } else {
+        console.log("Unexpected error", error);
+      }
     }
   };
 

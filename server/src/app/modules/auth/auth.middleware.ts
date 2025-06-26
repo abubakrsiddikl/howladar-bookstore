@@ -1,11 +1,19 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import config from "../../../config";
+import { Types } from "mongoose";
 
+// export interface JwtPayload {
+//   userId: string;
+//   role: string;
+// }
 export interface JwtPayload {
-  userId: string;
-  role: string;
-}
+  _id: string;
+  email: string;
+  role: "customer" | "admin" | "store-manager";
+};
+
+
 // jwt verify
 export const authenticate = (
   req: Request,

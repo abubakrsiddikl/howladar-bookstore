@@ -1,60 +1,42 @@
-import { Book } from "../books/book.model";
-import { IOrder } from "./order.interface";
-
-import mongoose from "mongoose";
 import { Order } from "./order.model";
-
+import { IOrder } from "./order.interface";
 export const OrderService = {
-  createOrder: async (
-    userId: string,
-    payload: Omit<IOrder, "user" | "createdAt" | "updatedAt">
-  ) => {
-    // Validate stock availability
-    for (const item of payload.books) {
-      const book = await Book.findById(item.bookId);
-      if (!book) throw new Error(`Book with ID ${item.bookId} not found`);
-      if (book.stock < item.quantity)
-        throw new Error(`Insufficient stock for ${book.title}`);
-    }
-
-    // Deduct stock
-    for (const item of payload.books) {
-      await Book.findByIdAndUpdate(item.bookId, {
-        $inc: { stock: -item.quantity },
-      });
-    }
-    let totalAmount = 0;
-    for (const item of payload.books) {
-      const book = await Book.findById(item.bookId);
-      if (!book) throw new Error("Book not found");
-      totalAmount += book.price * item.quantity;
-    }
-
-    // Create order
-    const order = await Order.create({
-      user: new mongoose.Types.ObjectId(userId),
-      books: payload.books,
-      totalAmount: totalAmount,
-      paymentGateway: payload.paymentMethod,
-      paymentStatus: "pending",
-    });
-
+  // ! create a new order
+  createOrder: async (orderData: IOrder) => {
+    const order = await Order.create(orderData);
     return order;
   },
 
-  updatePaymentStatus: async (
-    orderId: string,
-    status: "completed" | "failed",
-    transactionId?: string
-  ) => {
-    return Order.findByIdAndUpdate(
-      orderId,
-      { paymentStatus: status, transactionId },
-      { new: true }
-    );
+  // ! customer get her order
+  getMyOrders: async (userId: string) => {
+    const orders = await Order.find({ user: userId }).populate("items.book");
+    return orders;
   },
 
-  getUserOrders: async (userId: string) => {
-    return Order.find({ user: userId }).populate("books.bookId");
+  // ! get a single order
+  getSingleOrder: async (orderId: string, userId: string) => {
+    const order = await Order.findOne({ _id: orderId, user: userId }).populate(
+      "items.book"
+    );
+    return order;
+  },
+
+  // ! update order status "Processing" or "Delivered" or "Cancelled"
+  updateOrderStatus: async (orderId: string, status: string) => {
+    const order = await Order.findByIdAndUpdate(
+      orderId,
+      { orderStatus: status },
+      { new: true }
+    );
+    return order;
+  },
+  // ! update payment status Paid or pending
+  updatePaymentStatus: async (orderId: string) => {
+    const order = await Order.findByIdAndUpdate(
+      orderId,
+      { paymentStatus: "Paid" },
+      { new: true }
+    );
+    return order;
   },
 };

@@ -1,15 +1,26 @@
-
 import { z } from "zod";
+import mongoose from "mongoose";
 
-export const bookItemSchema = z.object({
-  bookId: z.string().min(1, "Book ID is required"),
-  quantity: z.number().int().min(1, "Quantity must be at least 1"),
-});
-
-export const createOrderSchema = z.object({
+export const createOrderZodSchema = z.object({
   body: z.object({
-    books: z.array(bookItemSchema).min(1, "At least one book is required"),
-    address: z.string().min(5, "Address is too short"),
-    paymentMethod: z.enum(["sslcommerz", "cash-on-delivery"]),
+    items: z
+      .array(
+        z.object({
+          book: z
+            .string()
+            .refine((val) => mongoose.Types.ObjectId.isValid(val), {
+              message: "Invalid Book ID",
+            }),
+          quantity: z.number().min(1, "Quantity must be at least 1"),
+        })
+      )
+      .nonempty("Order must have at least one item"),
+    shippingInfo: z.object({
+      name: z.string().min(1, "Name is required"),
+      email: z.string().email("Invalid email"),
+      address: z.string().min(1, "Address is required"),
+      phone: z.string().min(10, "Phone number is required"),
+    }),
+    paymentMethod: z.enum(["COD", "SSLCommerz"]),
   }),
 });
