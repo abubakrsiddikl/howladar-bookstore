@@ -38,8 +38,12 @@ export default function LoginPage() {
         console.log(res.data);
         router.push("/dashboard");
       }
-    } catch (err: any) {
-      setServerError(err.response?.data?.message || "Login failed");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setServerError(err.message || "Login failed");
+      } else {
+        console.log("Unexpected error", err);
+      }
     }
   };
 

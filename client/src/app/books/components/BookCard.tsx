@@ -21,7 +21,7 @@ const BookCard = ({
   stock,
 }: BookCardProps) => {
   return (
-    <div className="bg-white shadow-md hover:shadow-2xl transition-shadow duration-300 ">
+    <div className="bg-white shadow-md hover:shadow-2xl transition-shadow duration-300 rounded-lg">
       <Link href={`/bookdetails/${_id}`}>
         <div className="relative w-full h-64">
           <Image

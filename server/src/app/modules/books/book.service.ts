@@ -10,14 +10,16 @@ export const BookService = {
   // get all book
   getAllBooks: async (options: IBookFilterOptions) => {
     const { search, genre, page = 1, limit = 10 } = options;
-    const filters: any = {};
+    let filters: any = {};
     if (search) {
       const regex = new RegExp(search, "i");
-      filters.$or = [
-        { title: { $regex: regex } },
-        { author: { $regex: regex } },
-        { genre: { $regex: regex } },
-      ];
+      filters = {
+        $or: [
+          { title: { $regex: regex } },
+          { author: { $regex: regex } },
+          { genre: { $regex: regex } },
+        ],
+      };
     }
     if (genre) {
       filters.genre = genre;

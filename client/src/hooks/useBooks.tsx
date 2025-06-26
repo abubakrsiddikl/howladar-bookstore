@@ -1,5 +1,7 @@
+// src/hooks/useBooks.ts
 import { useEffect, useState } from "react";
 import axios from "axios";
+import useDebounce from "./useDebounce";
 
 export interface Book {
   _id: string;
@@ -16,6 +18,7 @@ export interface Book {
 export const useBooks = (search: string) => {
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const debouncedSearch = useDebounce(search, 500);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -25,9 +28,10 @@ export const useBooks = (search: string) => {
         const res = await axios.get(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/books`,
           {
-            params: { search },
+            params: { search: debouncedSearch },
           }
         );
+
         setBooks(res.data.data?.books || []);
       } catch {
         setError("Failed to fetch books");
@@ -37,7 +41,7 @@ export const useBooks = (search: string) => {
     };
 
     fetchBooks();
-  }, []);
+  }, [debouncedSearch]);
 
   return { books, loading, error };
 };
