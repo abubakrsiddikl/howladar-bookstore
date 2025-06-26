@@ -1,39 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useState } from "react";
 import BookCard from "./components/BookCard";
 
-interface Book {
-  _id: string;
-  title: string;
-  author: string;
-  price: number;
-  genre: string;
-  stock: number;
-  coverImage: string;
-  available: boolean;
-}
+import { useBooks } from "@/hooks/useBooks";
 
 export default function BooksPage() {
-  const [books, setBooks] = useState<Book[]>([]);
   const [search, setSearch] = useState("");
-
-  const fetchBooks = async () => {
-    try {
-      const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/books`
-      );
-      setBooks(res.data.data?.books);
-    } catch (error) {
-      console.error("Error fetching books:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchBooks();
-  }, []);
-  console.log(books);
+  const { books, loading, error } = useBooks(search);
+  if (loading) {
+    return <p>Loadin...</p>;
+  }
 
   return (
     <div className="px-4 py-6">

@@ -22,7 +22,7 @@ const BookCard = ({
 }: BookCardProps) => {
   return (
     <div className="bg-white shadow-md hover:shadow-2xl transition-shadow duration-300 ">
-      <Link href={`/books/${_id}`}>
+      <Link href={`/bookdetails/${_id}`}>
         <div className="relative w-full h-64">
           <Image
             src={coverImage}

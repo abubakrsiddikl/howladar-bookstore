@@ -18,12 +18,13 @@ export const BookController = {
 
   // ! get all books
   getAllBooks: async (req: Request, res: Response) => {
-    const { search, category } = req.query;
+    const { search, genre } = req.query;
+    console.log(genre)
     const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 10;
     const options = {
       search: search as string,
-      category: category as string,
+      genre: genre as string,
       page,
       limit,
     };

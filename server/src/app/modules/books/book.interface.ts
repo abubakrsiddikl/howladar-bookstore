@@ -1,7 +1,7 @@
 export interface IBook {
   title: string;
   author: string;
-  category: string;
+  genre: string;
   price: number;
   stock: number;
   coverImage: string;
@@ -10,7 +10,7 @@ export interface IBook {
 // book filter interface
 export interface IBookFilterOptions {
   search?: string;
-  category?: string;
+  genre?: string;
   page?: number;
   limit?: number;
 }
