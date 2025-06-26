@@ -5,10 +5,11 @@ import { BookRoutes } from "./app/modules/books/book.route";
 import { AuthRoutes } from "./app/modules/auth/auth.route";
 import { UserRoutes } from "./app/modules/users/user.route";
 import { OrderRoutes } from "./app/modules/orders/order.route";
+import config from "./config";
 
 const app: Application = express();
 
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(cors({ origin: config.client_url, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 
