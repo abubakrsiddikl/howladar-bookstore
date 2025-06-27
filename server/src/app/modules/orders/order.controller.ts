@@ -1,51 +1,98 @@
 import { Request, Response } from "express";
-import { Types } from "mongoose";
+import { startSession, Types } from "mongoose";
 import { OrderService } from "./order.service";
-import { createOrderZodSchema } from "./order.validation";
+import { IOrderItem } from "./order.interface";
+import { Book } from "../books/book.model";
 
 export const OrderController = {
   // ! Create Order
   createOrder: async (req: Request, res: Response) => {
-    const parsed = createOrderZodSchema.safeParse(req);
-    if (!parsed.success) {
-      res.status(400).json({ error: parsed.error.errors });
-      return;
+    const session = await startSession();
+    session.startTransaction();
+
+    try {
+      const { items, shippingInfo, paymentMethod } = req.body;
+      const authenticatedUserId = req.user?.userId;
+
+      if (!authenticatedUserId) {
+        res.status(401).json({ message: "Unauthorized" });
+        return;
+      }
+
+      let totalAmount = 0;
+      const validatedItems: IOrderItem[] = [];
+
+      for (const item of items) {
+        const book = await Book.findOneAndUpdate(
+          {
+            _id: item.book,
+            available: true,
+            stock: { $gte: item.quantity },
+          },
+          {
+            $inc: { stock: -item.quantity },
+          },
+          { new: true, session } // 🔥 Transaction Session Attach
+        );
+
+        if (!book) {
+          // 🔥 Rollback Immediately
+          await session.abortTransaction();
+          session.endSession();
+          res.status(400).json({
+            message: `Book not found or insufficient stock: ${item.book}`,
+          });
+          return;
+        }
+        // 🔥 Auto update availability if stock is zero
+        if (book.stock === 0) {
+          console.log("hit availabiliti scope");
+          await Book.findByIdAndUpdate(
+            item.book,
+            { available: false },
+            { session }
+          );
+        }
+        totalAmount += book.price * item.quantity;
+
+        validatedItems.push({
+          book: new Types.ObjectId(item.book),
+          quantity: item.quantity,
+        });
+      }
+
+      const order = await OrderService.createOrder(
+        {
+          user: new Types.ObjectId(authenticatedUserId),
+          items: validatedItems,
+          shippingInfo,
+          paymentMethod,
+          paymentStatus: paymentMethod === "COD" ? "Pending" : "Pending",
+          totalAmount,
+          orderStatus: "Processing",
+        },
+        session
+      );
+
+      await session.commitTransaction();
+      session.endSession();
+
+      res.status(201).json({
+        success: true,
+        message: "Order created successfully",
+        data: order,
+      });
+    } catch (error) {
+      await session.abortTransaction();
+      session.endSession();
+      console.error("Order creation error:", error);
+      res.status(500).json({ message: "Internal Server Error" });
     }
-
-    const { items, shippingInfo, paymentMethod } = parsed.data.body;
-
-    const authenticatedUserId = req.user?._id;
-    if (!authenticatedUserId) {
-      res.status(401).json({ message: "Unauthorized" });
-      return;
-    }
-
-    // 🔥 Optional: Calculate total based on DB Book Price
-    const totalAmount = items.reduce(
-      (sum, item) => sum + item.quantity * 1, // Later fetch book price if needed
-      0
-    );
-
-    const order = await OrderService.createOrder({
-      user: new Types.ObjectId(authenticatedUserId),
-      items,
-      shippingInfo,
-      paymentMethod,
-      paymentStatus: paymentMethod === "COD" ? "Pending" : "Pending",
-      totalAmount,
-      orderStatus: "Processing",
-    });
-
-    res.status(201).json({
-      success: true,
-      message: "Order created successfully",
-      data: order,
-    });
   },
 
   // ! Get My Orders
   getMyOrders: async (req: Request, res: Response) => {
-    const authenticatedUserId = req.user?._id;
+    const authenticatedUserId = req.user?.userId;
     if (!authenticatedUserId) {
       res.status(401).json({ message: "Unauthorized" });
       return;
@@ -62,7 +109,7 @@ export const OrderController = {
 
   // ! Get Single Order
   getSingleOrder: async (req: Request, res: Response) => {
-    const authenticatedUserId = req.user?._id;
+    const authenticatedUserId = req.user?.userId;
     if (!authenticatedUserId) {
       res.status(401).json({ message: "Unauthorized" });
       return;

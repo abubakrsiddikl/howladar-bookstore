@@ -1,11 +1,18 @@
 import express from "express";
 import { authenticate, authorize } from "../auth/auth.middleware";
 import { OrderController } from "./order.controller";
+import { validateRequest } from "../../middlewares/validateRequest";
+import { createOrderZodSchema } from "./order.validation";
 
 const router = express.Router();
 
 // ! Create Order (Only logged-in users)
-router.post("/", authenticate, OrderController.createOrder);
+router.post(
+  "/",
+  authenticate,
+  validateRequest(createOrderZodSchema),
+  OrderController.createOrder
+);
 
 // ! Get My Orders (Only logged-in users)
 router.get("/my-orders", authenticate, OrderController.getMyOrders);

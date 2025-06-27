@@ -1,10 +1,11 @@
 import { Order } from "./order.model";
 import { IOrder } from "./order.interface";
+import { ClientSession } from "mongoose";
 export const OrderService = {
   // ! create a new order
-  createOrder: async (orderData: IOrder) => {
-    const order = await Order.create(orderData);
-    return order;
+  createOrder: async (orderData: IOrder, session?: ClientSession) => {
+    const order = await Order.create([orderData], { session });
+    return order[0];
   },
 
   // ! customer get her order

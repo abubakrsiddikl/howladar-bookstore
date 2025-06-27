@@ -7,12 +7,12 @@ import { Types } from "mongoose";
 //   userId: string;
 //   role: string;
 // }
+// userId means _id of monogodb
 export interface JwtPayload {
-  _id: string;
+  userId: string;
   email: string;
   role: "customer" | "admin" | "store-manager";
-};
-
+}
 
 // jwt verify
 export const authenticate = (
@@ -21,7 +21,7 @@ export const authenticate = (
   next: NextFunction
 ) => {
   const token = req.cookies.token;
-  console.log("jwt middleware inside", token);
+  // console.log("jwt middleware inside", token);
   if (!token) {
     res.status(401).json({ message: "Unauthorized: No token" });
     return;

@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 
 export interface IOrderItem {
-  book: string;
+  book: Types.ObjectId;
   quantity: number;
 }
 
