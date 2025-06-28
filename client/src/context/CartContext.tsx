@@ -32,7 +32,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
   const { user } = useAuth();
 
-  // Load Cart
+  // my cart
   useEffect(() => {
     const loadCart = async () => {
       if (user) {
@@ -55,7 +55,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  // ➕ Add
+  // add to cart
   const addToCart = async (item: CartItem) => {
     if (user) {
       await axiosSecure.post(`/cart/add`, {
@@ -75,7 +75,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  // ❌ Remove
+  // remove on cart
   const removeFromCart = async (id: string) => {
     if (user) {
       await axiosSecure.delete(`/cart/remove/${id}`);
@@ -86,7 +86,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  // 🔄 Update Quantity
+  // update book quantity
   const updateQuantity = async (id: string, quantity: number) => {
     if (user) {
       await axiosSecure.patch(`/cart/update/${id}`, { quantity });
@@ -100,7 +100,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  // 🗑️ Clear
+  // Clear all cart
   const clearCart = async () => {
     if (user) {
       await axiosSecure.delete(`/cart/clear`);
