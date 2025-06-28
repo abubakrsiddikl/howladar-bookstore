@@ -29,8 +29,13 @@ const orderSchema = new Schema<IOrder>(
     totalAmount: { type: Number, required: true },
     orderStatus: {
       type: String,
-      enum: ["Processing", "Delivered", "Cancelled"],
+      enum: ["Processing", "Shipped", "Delivered", "Cancelled"],
       default: "Processing",
+    },
+    orderId: {
+      type: String,
+      required: true,
+      unique: true,
     },
   },
   { versionKey: false, timestamps: true }

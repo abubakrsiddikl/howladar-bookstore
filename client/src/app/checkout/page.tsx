@@ -9,6 +9,7 @@ import { axiosSecure } from "@/lib/axios";
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 export default function CheckoutPage() {
   const { cart, clearCart } = useCartContext();
@@ -48,17 +49,21 @@ export default function CheckoutPage() {
         shippingInfo,
         paymentMethod,
       };
-
+      // create a order to db
       const res = await axiosSecure.post(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/order/create-order`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/order`,
         payload
       );
+      console.log(res.data);
+      if (res.data) {
+        toast.success("Your order has been saved successfully");
+      }
 
       if (paymentMethod === "SSLCommerz" && res.data.paymentUrl) {
         router.push(res.data.paymentUrl);
       } else {
         clearCart();
-        router.push("/orders");
+        router.push(`/ordersuccess?orderId=${res.data.data?.orderId}`);
       }
     } catch (error) {
       console.error(error);

@@ -7,7 +7,6 @@ import { verifyGoogleToken } from "../../utils/googleAuth";
 import { verifyToken } from "../../utils/verifyToken";
 import axios from "axios";
 
-
 export const AuthService = {
   registerUser: async (payload: IUser) => {
     const existingUser = await User.findOne({ email: payload.email });
@@ -44,6 +43,7 @@ export const AuthService = {
     }
     // genarate jwt token
     const token = AuthService.generateToken(user);
+
     return {
       token,
       user: {
@@ -78,9 +78,12 @@ export const AuthService = {
     const access_token = tokenRes.data.access_token;
 
     // Get user info
-    const { data: userInfo } = await axios.get("https://www.googleapis.com/oauth2/v2/userinfo", {
-      headers: { Authorization: `Bearer ${access_token}` },
-    });
+    const { data: userInfo } = await axios.get(
+      "https://www.googleapis.com/oauth2/v2/userinfo",
+      {
+        headers: { Authorization: `Bearer ${access_token}` },
+      }
+    );
 
     const { email, name } = userInfo;
 

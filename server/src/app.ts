@@ -17,7 +17,7 @@ app.use(cookieParser());
 app.use("/api/v1/books", BookRoutes);
 app.use("/api/v1/auth", AuthRoutes);
 app.use("/api/v1/users", UserRoutes);
-app.use("/api/v1/orders", OrderRoutes);
+app.use("/api/v1/order", OrderRoutes);
 app.use("/api/v1/cart", CartRoutes);
 
 app.get("/", (req: Request, res: Response) => {

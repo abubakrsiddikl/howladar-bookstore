@@ -3,6 +3,7 @@ import { startSession, Types } from "mongoose";
 import { OrderService } from "./order.service";
 import { IOrderItem } from "./order.interface";
 import { Book } from "../books/book.model";
+import { getNextOrderId } from "./order.helper";
 
 export const OrderController = {
   // ! Create Order
@@ -32,11 +33,11 @@ export const OrderController = {
           {
             $inc: { stock: -item.quantity },
           },
-          { new: true, session } // 🔥 Transaction Session Attach
+          { new: true, session } // Transaction Session Attach
         );
 
         if (!book) {
-          // 🔥 Rollback Immediately
+          //  Rollback Immediately
           await session.abortTransaction();
           session.endSession();
           res.status(400).json({
@@ -44,7 +45,7 @@ export const OrderController = {
           });
           return;
         }
-        // 🔥 Auto update availability if stock is zero
+        // Auto update availability if stock is zero
         if (book.stock === 0) {
           console.log("hit availabiliti scope");
           await Book.findByIdAndUpdate(
@@ -60,6 +61,7 @@ export const OrderController = {
           quantity: item.quantity,
         });
       }
+      const orderId = await getNextOrderId();
 
       const order = await OrderService.createOrder(
         {
@@ -70,6 +72,7 @@ export const OrderController = {
           paymentStatus: paymentMethod === "COD" ? "Pending" : "Pending",
           totalAmount,
           orderStatus: "Processing",
+          orderId,
         },
         session
       );
@@ -110,12 +113,13 @@ export const OrderController = {
   // ! Get Single Order
   getSingleOrder: async (req: Request, res: Response) => {
     const authenticatedUserId = req.user?.userId;
+    
     if (!authenticatedUserId) {
       res.status(401).json({ message: "Unauthorized" });
       return;
     }
 
-    const orderId = req.params.id;
+    const orderId = req.params.orderId;
 
     const order = await OrderService.getSingleOrder(
       orderId,

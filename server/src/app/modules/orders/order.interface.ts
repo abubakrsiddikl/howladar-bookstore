@@ -21,7 +21,6 @@ export interface IOrder {
   paymentMethod: IPaymentMethod;
   paymentStatus: "Paid" | "Pending";
   totalAmount: number;
-  orderStatus: "Processing" | "Delivered" | "Cancelled";
-  createdAt?: Date;
-  updatedAt?: Date;
+  orderStatus: "Processing" | "Shipped" | "Delivered" | "Cancelled";
+  orderId: string;
 }

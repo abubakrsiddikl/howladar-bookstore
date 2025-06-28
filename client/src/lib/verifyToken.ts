@@ -5,9 +5,13 @@ interface JwtPayload {
   role: string;
 }
 
-export const verifyToken = (token: string): JwtPayload | null => {
+export const verifyToken = (token: string) => {
   try {
-    return jwt.verify(token, process.env.NEXT_PUBLIC_JWT_SECRET!) as JwtPayload;
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET as string
+    ) as JwtPayload;
+    return decoded;
   } catch {
     return null;
   }
