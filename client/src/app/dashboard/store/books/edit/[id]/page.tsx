@@ -1,36 +1,34 @@
+"use client";
+
 import BookForm from "@/components/Form/BookForm";
-import { axiosSecure } from "@/lib/axios";
-import { notFound } from "next/navigation";
+import { useBookDetails } from "@/hooks/useBookDetails";
+import { useParams } from "next/navigation";
 
-// ✅ Fetch Book Details
-const getBook = async (id: string) => {
-  try {
-    const res = await axiosSecure.get(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/books/${id}`
-    );
-    return res.data.data;
-  } catch {
-    return null;
-  }
-};
+const EditBookPage = () => {
+  const { id } = useParams<{ id: string }>();
+  const { book, loading } = useBookDetails(id);
 
-// ✅ Edit Page Component
-const EditBookPage = async ({ params }: { params: { id: string } }) => {
-  const book = await getBook(params.id);
+  if (loading) return <p>Loading...</p>;
 
-  if (!book) {
-    notFound();
-  }
+  if (!book) return <p>Book not found.</p>;
 
   return (
     <div className="p-4">
       <h1 className="text-3xl font-semibold mb-6">Edit Book</h1>
       <BookForm
-        id={params.id}
+        id={id}
         defaultValues={{
           title: book.title,
           author: book.author,
-          genre: book.genre,
+          genre: book.genre as
+            | "উপন্যাস"
+            | "গল্প"
+            | "ইসলামিক"
+            | "বিজ্ঞান"
+            | "ইতিহাস"
+            | "জীবনী"
+            | "ফ্যান্টাসি"
+            | "প্রযুক্তি",
           coverImageUrl: book.coverImage,
           price: book.price,
           stock: book.stock,

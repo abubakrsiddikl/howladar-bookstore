@@ -10,7 +10,7 @@ import { useState } from "react";
 import Image from "next/image";
 import toast from "react-hot-toast";
 
-// ✅ Genres
+//  Genres
 const genres = [
   "উপন্যাস",
   "গল্প",
@@ -22,7 +22,7 @@ const genres = [
   "প্রযুক্তি",
 ] as const;
 
-// ✅ Zod Schema
+// Zod Schema
 const bookSchema = z.object({
   title: z.string().min(1, "Title is required"),
   author: z.string().min(1, "Author is required"),
@@ -38,7 +38,7 @@ const bookSchema = z.object({
     .min(0, "Stock cannot be negative"),
 });
 
-// ✅ Types
+// type
 export type BookFormData = z.infer<typeof bookSchema>;
 
 interface BookFormProps {
@@ -72,7 +72,7 @@ const BookForm = ({ id, defaultValues }: BookFormProps) => {
 
   //  Submit Handler
   const onSubmit = async (data: BookFormData) => {
-    console.log(typeof data.price)
+    console.log(typeof data.price);
     try {
       const imageFile = data.coverImage[0];
       const imageUrl = await uploadImage(imageFile);
@@ -87,11 +87,11 @@ const BookForm = ({ id, defaultValues }: BookFormProps) => {
       };
 
       if (id) {
-        await axiosSecure.patch(
+        await axiosSecure.put(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/books/${id}`,
           payload
         );
-        toast.success("Book update successfull")
+        toast.success("Book update successfull");
       } else {
         await axiosSecure.post(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/books`,

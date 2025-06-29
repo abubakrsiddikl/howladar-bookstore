@@ -2,8 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 // ✅ Route to Role Mapping
 const routeRoleMap: Record<string, string[]> = {
-  "/admin": ["admin"],
-  "/store": ["admin", "store-manager"],
+  "/dashboard": ["admin", "store-manager"],
   "/orders": ["admin", "customer", "store-manager"],
   "/checkout": ["customer"],
   "/books/add": ["admin", "store-manager"],
@@ -43,8 +42,8 @@ export function middleware(request: NextRequest) {
 // ✅ Matcher: Protect these routes
 export const config = {
   matcher: [
-    "/admin/:path*",
-    "/store/:path*",
+    "/dashboard/:path*",
+
     "/orders/:path*",
     "/checkout/:path*",
     "/books/add",

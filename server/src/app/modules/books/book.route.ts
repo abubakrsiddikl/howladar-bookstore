@@ -21,7 +21,12 @@ router.get("/", BookController.getAllBooks);
 router.get("/:bookId", BookController.getSingleBook);
 
 // update book
-router.put("/:bookId", BookController.updateBook);
+router.put(
+  "/:bookId",
+  authenticate,
+  authorize("admin", "store-manager"),
+  BookController.updateBook
+);
 
 // delete book
 router.delete("/:bookId", BookController.deleteBook);

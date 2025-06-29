@@ -14,7 +14,7 @@ const Navbar = () => {
   const pathname = usePathname();
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
-
+  console.log("navbar",user)
   const handleLogout = async () => {
     await logout();
     toast.success("Logout successfull");
@@ -57,7 +57,7 @@ const Navbar = () => {
           {navLink("/", "Home")}
           {navLink("/books", "Books")}
           {user && navLink("/orders", "Orders")}
-          {user && navLink(dashboardRoute, "Dashboard")}
+          {/* {user && navLink(dashboardRoute, "Dashboard")} */}
 
           {!user ? (
             <>

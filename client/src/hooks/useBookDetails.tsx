@@ -49,8 +49,5 @@ export const useBookDetails = (id: string | string[] | undefined) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
-  console.log(book);
-  console.log("get similar book", similarBooks);
-
   return { book, similarBooks, loading };
 };
