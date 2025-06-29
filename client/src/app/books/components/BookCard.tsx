@@ -24,6 +24,7 @@ const BookCard = ({
   stock,
 }: BookCardProps) => {
   const { addToCart } = useCartContext();
+  const isOutOfStock = stock === 0;
   const handleAddToCart = () => {
     const cartItem = {
       book: { _id, title, coverImage, price },
@@ -55,22 +56,20 @@ const BookCard = ({
 
       <div className="px-4 pb-4">
         <button
-          className={`w-full px-4 py-2 rounded-lg text-lg cursor-pointer ${
-            stock > 0
-              ? "bg-[#FF8600] text-white"
-              : "bg-gray-300 text-gray-500 cursor-not-allowed"
+          onClick={handleAddToCart}
+          disabled={isOutOfStock}
+          className={`w-full px-4 py-2 rounded-lg text-lg flex justify-center items-center gap-2 transition ${
+            isOutOfStock
+              ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+              : "bg-[#FF8600] text-white hover:bg-[#e67600] cursor-pointer"
           }`}
-          disabled={stock === 0}
         >
-          {stock > 0 ? (
-            <button
-              onClick={handleAddToCart}
-              className="flex justify-center items-center gap-2"
-            >
-              Add to Cart<FaPlus></FaPlus>
-            </button>
-          ) : (
+          {isOutOfStock ? (
             "Out of Stock"
+          ) : (
+            <>
+              Add to Cart <FaPlus />
+            </>
           )}
         </button>
       </div>
