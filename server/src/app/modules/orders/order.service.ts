@@ -7,10 +7,39 @@ export const OrderService = {
     const order = await Order.create([orderData], { session });
     return order[0];
   },
+  // ! get all order and search order
+  getAllOrders: async (search?: string) => {
+    const query: any = {};
+
+    if (search) {
+      query.$or = [
+        { orderId: { $regex: search, $options: "i" } },
+        { "shippingInfo.phone": { $regex: search, $options: "i" } },
+        { "shippingInfo.address": { $regex: search, $options: "i" } },
+      ];
+    }
+
+    const orders = await Order.find(query)
+      .populate("items.book")
+      .populate("user")
+      .sort({ createdAt: -1 });
+
+    return orders;
+  },
 
   // ! customer get her order
-  getMyOrders: async (userId: string) => {
-    const orders = await Order.find({ user: userId }).populate("items.book");
+  getMyOrders: async (userId: string, search: string) => {
+    const query: any = { user: userId };
+    if (search) {
+      query.$or = [
+        { orderId: { $regex: search, $options: "i" } },
+        { "shippingInfo.phone": { $regex: search, $options: "i" } },
+        { "shippingInfo.address": { $regex: search, $options: "i" } },
+      ];
+    }
+    const orders = await Order.find(query)
+      .populate("items.book")
+      .sort({ createdAt: -1 });
     return orders;
   },
 

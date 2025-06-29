@@ -93,15 +93,37 @@ export const OrderController = {
     }
   },
 
+  // ! Get all orders
+  getAllOrders: async (req: Request, res: Response) => {
+    try {
+      const search = req.query.search as string;
+
+      const orders = await OrderService.getAllOrders(search);
+
+      res.status(200).json({
+        success: true,
+        message: "All orders fetched successfully",
+        data: orders,
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to fetch orders",
+        error,
+      });
+    }
+  },
+
   // ! Get My Orders
   getMyOrders: async (req: Request, res: Response) => {
     const authenticatedUserId = req.user?.userId;
+    const search = req.query.search as string;
     if (!authenticatedUserId) {
       res.status(401).json({ message: "Unauthorized" });
       return;
     }
 
-    const orders = await OrderService.getMyOrders(authenticatedUserId);
+    const orders = await OrderService.getMyOrders(authenticatedUserId, search);
 
     res.status(200).json({
       success: true,
@@ -113,7 +135,7 @@ export const OrderController = {
   // ! Get Single Order
   getSingleOrder: async (req: Request, res: Response) => {
     const authenticatedUserId = req.user?.userId;
-    
+
     if (!authenticatedUserId) {
       res.status(401).json({ message: "Unauthorized" });
       return;
