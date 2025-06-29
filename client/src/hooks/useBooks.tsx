@@ -25,7 +25,6 @@ export const useBooks = (search: string) => {
     const fetchBooks = async () => {
       try {
         setLoading(true);
-        console.log(process.env.NEXT_PUBLIC_API_BASE_URL)
         const res = await axios.get(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/books`,
           {

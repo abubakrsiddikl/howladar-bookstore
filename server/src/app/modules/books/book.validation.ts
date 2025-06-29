@@ -19,14 +19,14 @@ export const createBookZodSchema = z.object({
       })
       .min(0, "Stock cannot be negative"),
     genre: z.enum([
-      "FICTION",
-      "NON_FICTION",
-      "SCIENCE",
-      "HISTORY",
-      "BIOGRAPHY",
-      "FANTASY",
-      "TECHNOLOGY",
-      "ISLAMIC",
+      "উপন্যাস",
+      "গল্প",
+      "ইসলামিক",
+      "বিজ্ঞান",
+      "ইতিহাস",
+      "জীবনী",
+      "ফ্যান্টাসি",
+      "প্রযুক্তি",
     ]),
     description: z.string().optional(),
     coverImage: z.string({

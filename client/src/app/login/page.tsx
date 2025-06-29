@@ -7,6 +7,7 @@ import { axiosSecure } from "@/lib/axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import GoogleLoginButton from "@/components/GoogleLoginButton";
+import toast from "react-hot-toast";
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Valid email address" }),
@@ -34,9 +35,20 @@ export default function LoginPage() {
       setServerError("");
       console.log(data);
       const res = await axiosSecure.post("/auth/login", data);
+
       if (res.data?.success) {
-        console.log(res.data);
-        router.push("/dashboard");
+        const role = res.data?.user?.role;
+        toast.success("You are Logged in")
+        // role-based redirect
+        if (role === "admin") {
+          router.push("/dashboard/admin");
+        } else if (role === "store-manager") {
+          router.push("/dashboard/store");
+        } else if (role === "customer") {
+          router.push("/");
+        } else {
+          router.push("/"); // fallback route
+        }
       }
     } catch (err: unknown) {
       if (err instanceof Error) {

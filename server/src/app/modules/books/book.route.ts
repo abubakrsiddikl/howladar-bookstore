@@ -8,7 +8,9 @@ const router = express.Router();
 // create a book
 router.post(
   "/",
-  validateRequest(createBookZodSchema),authenticate,authorize("admin"),
+  validateRequest(createBookZodSchema),
+  authenticate,
+  authorize("admin", "store-manager"),
   BookController.createBook
 );
 
