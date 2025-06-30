@@ -19,7 +19,7 @@ export const BookController = {
   // ! get all books
   getAllBooks: async (req: Request, res: Response) => {
     const { search, genre } = req.query;
-    console.log(genre)
+    console.log(genre);
     const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 10;
     const options = {
@@ -63,6 +63,7 @@ export const BookController = {
   // ! delete a book
   deleteBook: async (req: Request, res: Response) => {
     const id = req.params.bookId;
+    console.log("delet id", id);
     const result = await BookService.deleteBook(id);
     res.json({
       success: true,

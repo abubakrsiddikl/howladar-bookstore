@@ -96,9 +96,12 @@ export const OrderController = {
   // ! Get all orders
   getAllOrders: async (req: Request, res: Response) => {
     try {
-      const search = req.query.search as string;
-
-      const orders = await OrderService.getAllOrders(search);
+      const { search, status } = req.query;
+      console.log({ search, status });
+      const orders = await OrderService.getAllOrders(
+        search as string,
+        status as string
+      );
 
       res.status(200).json({
         success: true,
@@ -132,21 +135,12 @@ export const OrderController = {
     });
   },
 
-  // ! Get Single Order
+  // ! Get Single Order only store manger and admin
   getSingleOrder: async (req: Request, res: Response) => {
-    const authenticatedUserId = req.user?.userId;
-
-    if (!authenticatedUserId) {
-      res.status(401).json({ message: "Unauthorized" });
-      return;
-    }
-
     const orderId = req.params.orderId;
 
-    const order = await OrderService.getSingleOrder(
-      orderId,
-      authenticatedUserId
-    );
+    const order = await OrderService.getSingleOrder(orderId);
+    console.log("signle order");
 
     if (!order) {
       res.status(404).json({ message: "Order not found" });
@@ -162,8 +156,9 @@ export const OrderController = {
 
   // ! Update Order Status (Admin/Store-Manager use only)
   updateOrderStatus: async (req: Request, res: Response) => {
-    const orderId = req.params.id;
+    const orderId = req.params.orderId;
     const { status: updatedStatus } = req.body;
+    console.log({ orderId, updatedStatus });
 
     if (!updatedStatus) {
       res.status(400).json({ message: "Status is required" });

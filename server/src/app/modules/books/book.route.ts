@@ -29,6 +29,11 @@ router.put(
 );
 
 // delete book
-router.delete("/:bookId", BookController.deleteBook);
+router.delete(
+  "/:bookId",
+  authenticate,
+  authorize("admin", "store-manager"),
+  BookController.deleteBook
+);
 
 export const BookRoutes = router;

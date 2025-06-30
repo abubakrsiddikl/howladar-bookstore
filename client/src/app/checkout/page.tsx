@@ -35,7 +35,7 @@ export default function CheckoutPage() {
 
   const handlePlaceOrder = async () => {
     if (!shippingInfo.phone || !shippingInfo.address) {
-      alert("⚠️ ঠিকানা এবং ফোন নাম্বার দিন।");
+      toast.error("⚠️ ঠিকানা এবং ফোন নাম্বার দিন।");
       return;
     }
     setLoading(true);

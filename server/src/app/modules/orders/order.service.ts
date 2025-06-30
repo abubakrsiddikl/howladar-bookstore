@@ -8,15 +8,21 @@ export const OrderService = {
     return order[0];
   },
   // ! get all order and search order
-  getAllOrders: async (search?: string) => {
-    const query: any = {};
+  getAllOrders: async (search?: string, status?: string) => {
+    let query: any = {};
 
     if (search) {
-      query.$or = [
-        { orderId: { $regex: search, $options: "i" } },
-        { "shippingInfo.phone": { $regex: search, $options: "i" } },
-        { "shippingInfo.address": { $regex: search, $options: "i" } },
-      ];
+      const regex = new RegExp(search, "i");
+      query = {
+        $or: [
+          { orderId: { $regex: regex } },
+          { "shippingInfo.phone": { $regex: regex } },
+          { "shippingInfo.address": { $regex: regex } },
+        ],
+      };
+    }
+    if (status) {
+      query.orderStatus = status;
     }
 
     const orders = await Order.find(query)
@@ -44,10 +50,8 @@ export const OrderService = {
   },
 
   // ! get a single order
-  getSingleOrder: async (orderId: string, userId: string) => {
-    const order = await Order.findOne({ _id: orderId, user: userId }).populate(
-      "items.book"
-    );
+  getSingleOrder: async (orderId: string) => {
+    const order = await Order.findOne({ _id: orderId }).populate("items.book");
     return order;
   },
 

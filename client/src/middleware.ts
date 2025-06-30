@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+import { verifyToken } from "./lib/verifyToken";
 
-// ✅ Route to Role Mapping
+// ✅ Route-based Role Mapping
 const routeRoleMap: Record<string, string[]> = {
   "/dashboard": ["admin", "store-manager"],
   "/orders": ["admin", "customer", "store-manager"],
@@ -10,42 +11,45 @@ const routeRoleMap: Record<string, string[]> = {
 };
 
 // ✅ Middleware Function
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const token = request.cookies.get("token")?.value;
-  const userRole = request.cookies.get("role")?.value; // ✅ Role cookie from server
-
   const { pathname } = request.nextUrl;
-
-  console.log("Middleware hit:", pathname);
-  // console.log({ token, userRole });
 
   const matchedRoute = Object.keys(routeRoleMap).find((route) =>
     pathname.startsWith(route)
   );
 
-  if (matchedRoute) {
-    // ✅ If no token, redirect to login
-    if (!token) {
-      return NextResponse.redirect(new URL("/login", request.url));
-    }
-
-    // ✅ Check role from cookie
-    const allowedRoles = routeRoleMap[matchedRoute];
-    if (!userRole || !allowedRoles.includes(userRole)) {
-      return NextResponse.redirect(new URL("/unauthorized", request.url));
-    }
+  if (!matchedRoute) {
+    // If route is not protected, allow
+    return NextResponse.next();
   }
 
-  return NextResponse.next();
+  // ✅ Token Check
+  if (!token) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  const decoded = await verifyToken(token);
+  console.log("decoded value", decoded);
+
+  if (!decoded) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  const userRole = decoded.role;
+  const allowedRoles = routeRoleMap[matchedRoute];
+
+  if (!allowedRoles.includes(userRole)) {
+    return NextResponse.redirect(new URL("/unauthorized", request.url));
+  }
 }
 
-// ✅ Matcher: Protect these routes
+// ✅ Matcher
 export const config = {
   matcher: [
     "/dashboard/:path*",
-
     "/orders/:path*",
-    "/checkout/:path*",
+    "/checkout",
     "/books/add",
     "/profile/:path*",
   ],

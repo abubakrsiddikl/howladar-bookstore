@@ -1,18 +1,36 @@
-import jwt from "jsonwebtoken";
+import { jwtVerify } from "jose";
 
-interface JwtPayload {
+export interface JwtPayload {
   userId: string;
   role: string;
 }
 
-export const verifyToken = (token: string) => {
+const isJwtPayload = (payload: unknown): payload is JwtPayload => {
+  if (
+    typeof payload === "object" &&
+    payload !== null &&
+    "userId" in payload &&
+    "role" in payload
+  ) {
+    const p = payload as Record<string, unknown>;
+    return typeof p.userId === "string" && typeof p.role === "string";
+  }
+  return false;
+};
+
+export const verifyToken = async (
+  token: string
+): Promise<JwtPayload | null> => {
   try {
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET as string
-    ) as JwtPayload;
-    return decoded;
-  } catch {
+    const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+    const { payload } = await jwtVerify(token, secret);
+
+    if (isJwtPayload(payload)) {
+      return payload;
+    }
+    return null;
+  } catch (error) {
+    console.error("Invalid Token", error);
     return null;
   }
 };

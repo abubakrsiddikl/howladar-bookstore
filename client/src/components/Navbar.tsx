@@ -57,7 +57,7 @@ const Navbar = () => {
           {navLink("/", "Home")}
           {navLink("/books", "Books")}
           {user && navLink("/orders", "Orders")}
-          {/* {user && navLink(dashboardRoute, "Dashboard")} */}
+          {user && navLink(dashboardRoute, "Dashboard")}
 
           {!user ? (
             <>

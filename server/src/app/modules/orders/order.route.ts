@@ -17,6 +17,13 @@ router.post(
 // ! Get My Orders (Only logged-in users)
 router.get("/my-orders", authenticate, OrderController.getMyOrders);
 
+// ! Get all Orders
+router.get(
+  "/",
+  authenticate,
+  authorize("admin", "store-manager"),
+  OrderController.getAllOrders
+);
 // ! Get Single Order (Only logged-in users)
 router.get("/:orderId", authenticate, OrderController.getSingleOrder);
 
