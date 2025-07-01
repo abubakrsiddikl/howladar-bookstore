@@ -4,16 +4,10 @@ export default function OrderSummary({
   subtotal,
   onlineFee,
   total,
-  handlePlaceOrder,
-  loading,
-  disabled,
 }: {
   subtotal: number;
   onlineFee: number;
   total: number;
-  handlePlaceOrder: () => void;
-  loading: boolean;
-  disabled: boolean;
 }) {
   return (
     <div className="bg-white p-5 rounded shadow">
@@ -33,7 +27,7 @@ export default function OrderSummary({
         </div>
       </div>
 
-      <button
+      {/* <button
         onClick={handlePlaceOrder}
         disabled={disabled || loading}
         className={`w-full bg-blue-600 text-white py-3 rounded mt-5 ${
@@ -41,7 +35,7 @@ export default function OrderSummary({
         }`}
       >
         {loading ? "Placing Order..." : "Place Order"}
-      </button>
+      </button> */}
     </div>
   );
 }

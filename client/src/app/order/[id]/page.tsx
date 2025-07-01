@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import Image from "next/image";
@@ -24,8 +23,11 @@ interface Order {
   shippingInfo: {
     name: string;
     email: string;
-    phone: string;
     address: string;
+    phone: string;
+    division: string;
+    district: string;
+    city: string;
   };
 }
 
@@ -37,9 +39,9 @@ export default function OrderDetailsPage() {
 
   useEffect(() => {
     const fetchOrder = async () => {
-    //   if (!user) {
-    //     router.push("/login");
-    //   }
+      //   if (!user) {
+      //     router.push("/login");
+      //   }
       try {
         const res = await axiosSecure.get(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/order/${id}`
@@ -54,20 +56,6 @@ export default function OrderDetailsPage() {
       fetchOrder();
     }
   }, [id, user, router]);
-
-  const handleCancel = async () => {
-    try {
-      await axios.patch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/orders/${id}/cancel`,
-        {},
-        { withCredentials: true }
-      );
-      alert("Order Cancelled Successfully!");
-      router.push("/orders");
-    } catch (error) {
-      console.error("Cancel failed:", error);
-    }
-  };
 
   const handleDownloadInvoice = () => {
     // 👇 Placeholder for Invoice Download
@@ -90,14 +78,6 @@ export default function OrderDetailsPage() {
           </p>
         </div>
         <div className="space-x-2">
-          {order.orderStatus === "Processing" && (
-            <button
-              onClick={handleCancel}
-              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-            >
-              অর্ডার বাতিল করুন
-            </button>
-          )}
           <button
             onClick={handleDownloadInvoice}
             className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"

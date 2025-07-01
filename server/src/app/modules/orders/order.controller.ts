@@ -27,7 +27,7 @@ export const OrderController = {
       let totalAmount = 0;
       const validatedItems: IOrderItem[] = [];
 
-      // ✅ Book Check and Stock Validation
+      //  Book Check and Stock Validation
       for (const item of items) {
         const book = await Book.findOneAndUpdate(
           {
@@ -68,7 +68,7 @@ export const OrderController = {
 
       const orderId = await getNextOrderId();
 
-      // ✅ Create Order
+      //  Create Order
       const order = await OrderService.createOrder(
         {
           user: new Types.ObjectId(authenticatedUserId),
@@ -87,7 +87,7 @@ export const OrderController = {
       session.endSession();
 
       // =============================
-      // ✅ Email Notification Section
+      //  Email Notification Section
       // =============================
 
       const user = await User.findById(authenticatedUserId);
@@ -109,7 +109,10 @@ export const OrderController = {
         user.name,
         paymentMethod,
         shippingInfo.address,
-        shippingInfo.phone
+        shippingInfo.phone,
+        shippingInfo.division,
+        shippingInfo.district,
+        shippingInfo.city
       );
 
       // Send Email to Admins/Store-Manager

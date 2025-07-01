@@ -1,4 +1,5 @@
 "use client";
+import GoogleLoginButton from "@/components/GoogleLoginButton";
 import { axiosSecure } from "@/lib/axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -46,9 +47,11 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black">
-      <div className="max-w-md mx-auto mt-20 bg-[#33C24D] shadow-md p-6 rounded-md ">
-        <h2 className="text-2xl font-bold text-center mb-6">Sign Up</h2>
+    <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
+      <div className="w-full max-w-md bg-white p-8 shadow-lg rounded-lg">
+        <h2 className="text-2xl font-bold text-center mb-2 text-[#FF8600]">
+          Register
+        </h2>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
             <p className="text-lg font-semibold">Name</p>
@@ -97,14 +100,14 @@ export default function RegisterPage() {
           >
             Register
           </button>
+          <p className=" text-sm ">
+            আপনার একাউন্ট আছে ?
+            <a href="/login" className="ml-2 text-blue-600 hover:underline">
+              Login
+            </a>
+          </p>
         </form>
-
-        <p className="text-center text-sm mt-4">
-          You have already account?
-          <a href="/login" className="text-blue-600 hover:underline">
-            Login
-          </a>
-        </p>
+        <GoogleLoginButton></GoogleLoginButton>
       </div>
     </div>
   );

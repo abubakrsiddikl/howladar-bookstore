@@ -4,7 +4,10 @@ export const orderEmailTemplate = (
   customerName: string,
   paymentMethod: string,
   shippingAddress: string,
-  phone: string
+  phone: string,
+  division: string,
+  district: string,
+  city: string
 ) => {
   return `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border:1px solid #ddd; padding: 20px;">
@@ -27,7 +30,7 @@ export const orderEmailTemplate = (
         </tr>
         <tr>
           <td style="padding: 8px; border: 1px solid #ddd;">Shipping Address:</td>
-          <td style="padding: 8px; border: 1px solid #ddd;">${shippingAddress}</td>
+          <td style="padding: 8px; border: 1px solid #ddd;">${shippingAddress},উপজেলা: ${city}, জেলা: ${district}, বিভাগ : ${division} </td>
         </tr>
         <tr>
           <td style="padding: 8px; border: 1px solid #ddd;">Payment Method:</td>

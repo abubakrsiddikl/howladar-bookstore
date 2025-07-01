@@ -10,6 +10,9 @@ export interface IShippingInfo {
   email: string;
   address: string;
   phone: string;
+  division: string;
+  district: string;
+  city: string;
 }
 
 export type IPaymentMethod = "COD" | "SSLCommerz";

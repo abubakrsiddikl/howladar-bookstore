@@ -9,6 +9,8 @@ import { useState } from "react";
 import GoogleLoginButton from "@/components/GoogleLoginButton";
 import toast from "react-hot-toast";
 import { useAuth } from "@/context/AuthContext";
+import Link from "next/link";
+// import Link from "next/link";
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Valid email address" }),
@@ -21,6 +23,8 @@ type LoginFormInputs = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const router = useRouter();
+  // const pathname = usePathname();
+
   const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
   const { refetchUser } = useAuth();
@@ -65,7 +69,27 @@ export default function LoginPage() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
       <div className="w-full max-w-md bg-white p-8 shadow-lg rounded-lg">
-        <h2 className="text-2xl font-bold text-center mb-6">🔐 Login</h2>
+        {/* <div className="flex justify-center gap-4">
+          <Link href={"/login"}>
+            <button
+              className={`${
+                pathname === "/login"
+                  ? "text-2xl text-[#FF8600] font-medium text-center mb-6"
+                  : "text-2xl font-medium text-center mb-6"
+              }`}
+            >
+              Login
+            </button>
+          </Link>
+          <Link href={"/register"}>
+            <button className="text-2xl font-medium text-center mb-6">
+              Register
+            </button>
+          </Link>
+        </div> */}
+        <h2 className="text-2xl text-[#FF8600] font-medium text-center mb-6">
+          Login
+        </h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           {/* Email */}
@@ -106,7 +130,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={isSubmitting || loading}
-            className={`w-full bg-blue-700 text-white py-2 px-4 rounded-md hover:bg-blue-800 transition ${
+            className={`w-full bg-blue-700 text-white py-2 px-4 rounded-md hover:bg-blue-800 transition cursor-pointer ${
               (isSubmitting || loading) && "opacity-50 cursor-not-allowed"
             }`}
           >
@@ -117,9 +141,15 @@ export default function LoginPage() {
           {serverError && (
             <p className="text-center text-red-500 text-sm">{serverError}</p>
           )}
+          <p className="text-sm">
+            আপনার কোনো একাউন্ট নেই ?{" "}
+            <Link href={"/register"} className="text-blue-600 hover:underline">
+              Register
+            </Link>
+          </p>
         </form>
 
-        <div className="mt-4">
+        <div className="">
           <GoogleLoginButton />
         </div>
       </div>
