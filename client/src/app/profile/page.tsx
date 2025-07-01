@@ -12,21 +12,20 @@ const ProfilePage = () => {
 
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
-    return;
-    try {
-      const res = await axiosSecure.patch("/users/update-profile", {
-        name,
-        phone,
-      });
+    // try {
+    //   const res = await axiosSecure.patch("/users/update-profile", {
+    //     name,
+    //     phone,
+    //   });
 
-      // ✅ Update context
-      setUser(res.data.data);
+    //   // ✅ Update context
+    //   setUser(res.data.data);
 
-      alert("Profile updated successfully");
-    } catch (error) {
-      console.error(error);
-      alert("Failed to update");
-    }
+    //   alert("Profile updated successfully");
+    // } catch (error) {
+    //   console.error(error);
+    //   alert("Failed to update");
+    // }
   };
 
   if (!user) {

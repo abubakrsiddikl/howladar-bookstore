@@ -4,8 +4,12 @@ import { OrderService } from "./order.service";
 import { IOrderItem } from "./order.interface";
 import { Book } from "../books/book.model";
 import { getNextOrderId } from "./order.helper";
+import { sendEmail } from "../../utils/sendEmail";
+import { orderEmailTemplate } from "../../utils/emailTemplates";
+import { User } from "../auth/user.model";
 
 export const OrderController = {
+  // ! Create Order
   // ! Create Order
   createOrder: async (req: Request, res: Response) => {
     const session = await startSession();
@@ -23,6 +27,7 @@ export const OrderController = {
       let totalAmount = 0;
       const validatedItems: IOrderItem[] = [];
 
+      // ✅ Book Check and Stock Validation
       for (const item of items) {
         const book = await Book.findOneAndUpdate(
           {
@@ -33,11 +38,10 @@ export const OrderController = {
           {
             $inc: { stock: -item.quantity },
           },
-          { new: true, session } // Transaction Session Attach
+          { new: true, session }
         );
 
         if (!book) {
-          //  Rollback Immediately
           await session.abortTransaction();
           session.endSession();
           res.status(400).json({
@@ -45,15 +49,15 @@ export const OrderController = {
           });
           return;
         }
-        // Auto update availability if stock is zero
+
         if (book.stock === 0) {
-          console.log("hit availabiliti scope");
           await Book.findByIdAndUpdate(
             item.book,
             { available: false },
             { session }
           );
         }
+
         totalAmount += book.price * item.quantity;
 
         validatedItems.push({
@@ -61,8 +65,10 @@ export const OrderController = {
           quantity: item.quantity,
         });
       }
+
       const orderId = await getNextOrderId();
 
+      // ✅ Create Order
       const order = await OrderService.createOrder(
         {
           user: new Types.ObjectId(authenticatedUserId),
@@ -80,9 +86,46 @@ export const OrderController = {
       await session.commitTransaction();
       session.endSession();
 
+      // =============================
+      // ✅ Email Notification Section
+      // =============================
+
+      const user = await User.findById(authenticatedUserId);
+      if (!user?.email) {
+        throw new Error("Customer email not found");
+      }
+      const admins = await User.find({
+        role: { $in: ["admin", "store-manager"] },
+      });
+
+      const adminEmails = admins.map((a) => a.email);
+      const customerEmail = user.email;
+
+      const subject = `New Order Placed: ${order.orderId}`;
+
+      const htmlTemplate = orderEmailTemplate(
+        order.orderId,
+        order.totalAmount,
+        user.name,
+        paymentMethod,
+        shippingInfo.address,
+        shippingInfo.phone
+      );
+
+      // Send Email to Admins/Store-Manager
+      await sendEmail(adminEmails.join(","), subject, htmlTemplate);
+
+      //  Send Email to Customer
+      await sendEmail(
+        customerEmail,
+        `Order Confirmation: ${order.orderId}`,
+        htmlTemplate
+      );
+
+      // Response
       res.status(201).json({
         success: true,
-        message: "Order created successfully",
+        message: "Order created successfully. Email sent.",
         data: order,
       });
     } catch (error) {
