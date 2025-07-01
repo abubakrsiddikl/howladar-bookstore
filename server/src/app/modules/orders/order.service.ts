@@ -1,6 +1,7 @@
 import { Order } from "./order.model";
 import { IOrder } from "./order.interface";
-import { ClientSession } from "mongoose";
+import { ClientSession, SortOrder } from "mongoose";
+
 export const OrderService = {
   // ! create a new order
   createOrder: async (orderData: IOrder, session?: ClientSession) => {
@@ -8,7 +9,11 @@ export const OrderService = {
     return order[0];
   },
   // ! get all order and search order
-  getAllOrders: async (search?: string, status?: string) => {
+  getAllOrders: async (
+    search?: string,
+    status?: string,
+    limit: number = 10
+  ) => {
     let query: any = {};
 
     if (search) {
@@ -26,11 +31,41 @@ export const OrderService = {
     }
 
     const orders = await Order.find(query)
+      .sort({ createdAt: -1 })
+      .limit(limit)
       .populate("items.book")
-      .populate("user")
-      .sort({ createdAt: -1 });
-
+      .populate("user");
     return orders;
+  },
+  getOrderStats: async () => {
+    const totalOrders = await Order.countDocuments();
+    const delivered = await Order.countDocuments({ orderStatus: "Delivered" });
+    const processing = await Order.countDocuments({
+      orderStatus: "Processing",
+    });
+    const shipped = await Order.countDocuments({ orderStatus: "Shipped" });
+    const cancelled = await Order.countDocuments({ orderStatus: "Cancelled" });
+    // calculate total sell amoun
+    const orders = await Order.find({
+      $or: [
+        { paymentMethod: "Bkash", paymentStatus: "Paid" },
+        { paymentMethod: "COD", orderStatus: "Delivered" },
+      ],
+    });
+    const totalSales = orders.reduce(
+      (sum, order) => sum + order.totalAmount,
+      0
+    );
+    console.log(typeof totalSales);
+
+    return {
+      totalOrders,
+      delivered,
+      processing,
+      shipped,
+      cancelled,
+      totalSales,
+    };
   },
 
   // ! customer get her order

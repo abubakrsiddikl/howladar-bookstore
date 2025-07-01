@@ -27,3 +27,11 @@ export interface IOrder {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface IOrderStats {
+  totalOrders: number;
+  delivered: number;
+  processing: number;
+  shipped: number;
+  cancelled: number;
+}

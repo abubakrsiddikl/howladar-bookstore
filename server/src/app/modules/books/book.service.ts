@@ -39,6 +39,14 @@ export const BookService = {
       books,
     };
   },
+  // ! get book stats
+  getBookStats: async () => {
+    const totalBooks = await Book.countDocuments();
+
+    return {
+      totalBooks,
+    };
+  },
   // get single book
   getSingleBook: async (bookId: string) => {
     const book = await Book.findById(bookId);

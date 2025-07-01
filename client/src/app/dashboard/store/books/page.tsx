@@ -4,35 +4,9 @@ import Link from "next/link";
 
 import Image from "next/image";
 import { useBooks } from "@/hooks/useBooks";
-import { axiosSecure } from "@/lib/axios";
-import Swal from "sweetalert2";
 
 export default function BookListPage() {
-  const { books } = useBooks("");
-
-  const handleDelete = async (id: string, bookTitle: string) => {
-    Swal.fire({
-      title: "আপনি কি নিশ্চিত?",
-      text: `আপনি এই ${bookTitle} বইটি  মুছে ফেলতে চান `,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      cancelButtonText: "বাতিল",
-      confirmButtonText: "হ্যাঁ, মুছে ফেলুন !",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        await axiosSecure.delete(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/books/${id}`
-        );
-        Swal.fire({
-          title: "মুছে ফেলা হয়েছে!",
-          text: "বইটি  মুছে ফেলা সম্পন্ন  হয়েছে",
-          icon: "success",
-        });
-      }
-    });
-  };
+  const { books, handleDelete } = useBooks("");
 
   return (
     <div>

@@ -96,11 +96,14 @@ export const OrderController = {
   // ! Get all orders
   getAllOrders: async (req: Request, res: Response) => {
     try {
-      const { search, status } = req.query;
-      console.log({ search, status });
+      const { search, status, limit } = req.query;
+      const queryLimit = Number(limit) || 10;
+      console.log({ search, status, queryLimit });
+
       const orders = await OrderService.getAllOrders(
         search as string,
-        status as string
+        status as string,
+        queryLimit
       );
 
       res.status(200).json({
@@ -113,6 +116,23 @@ export const OrderController = {
         success: false,
         message: "Failed to fetch orders",
         error,
+      });
+    }
+  },
+  // ! get order statics
+  getOrderStats: async (req: Request, res: Response) => {
+    try {
+      const stats = await OrderService.getOrderStats();
+
+      res.status(200).json({
+        success: true,
+        message: "Order statistics retrieved successfully",
+        data: stats,
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to fetch order statistics",
       });
     }
   },

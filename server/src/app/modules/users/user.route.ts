@@ -11,6 +11,19 @@ router.put("/profile", authenticate, UserController.updateUserProfile);
 
 // get all user for only admin
 router.get("/", authenticate, authorize("admin"), UserController.getAllUser);
+
+//  get user stats
+router.get(
+  "/stats",
+  authenticate,
+  authorize("admin"),
+  UserController.getUserStats
+);
 // promote user role only admin
-router.patch("/:id/promote", authenticate, authorize("admin"), UserController.promoteUser);
+router.patch(
+  "/:id/role",
+  authenticate,
+  authorize("admin"),
+  UserController.promoteUser
+);
 export const UserRoutes = router;

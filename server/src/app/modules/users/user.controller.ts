@@ -39,13 +39,41 @@ export const UserController = {
   },
   //   ! get all user
   getAllUser: async (req: Request, res: Response) => {
+    const { search } = req.query;
+    const currentUserId = req.user?.userId;
+    if (!currentUserId) {
+      res.json({ success: false, message: "unauthorized access" });
+    }
+    console.log({ search });
     try {
-      const users = await UserService.getAllUsers();
-      res.json({ success: true, users });
+      const users = await UserService.getAllUsers(
+        currentUserId as string,
+        search as string
+      );
+      res.json({ success: true, data: users });
     } catch (error) {
       res.status(500).json({ message: "Server error" });
     }
   },
+  //  ! get user stats
+  getUserStats: async (req: Request, res: Response) => {
+    try {
+      const stats = await UserService.getUserStats();
+
+      res.status(200).json({
+        success: true,
+        message: "User stats fetched successfully",
+        data: stats,
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to fetch user stats",
+        error,
+      });
+    }
+  },
+
   //   ! promote user role
   promoteUser: async (req: Request, res: Response) => {
     try {

@@ -7,8 +7,7 @@ import { useState } from "react";
 const StoreOrderPage = () => {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("");
-  console.log(status)
-  const { orders, loading } = useOrders(search, status);
+  const { orders, loading } = useOrders(search, status, "");
 
   return (
     <div className="p-6">

@@ -32,8 +32,37 @@ export const UserService = {
     }
     return updatedUser;
   },
-  getAllUsers: async () => {
-    return User.find().select("-password");
+  getAllUsers: async (id: string, search?: string) => {
+    const filter = { _id: { $ne: id } }; // নিজের ID বাদ দিয়ে
+
+    let query: Record<string, unknown> = { ...filter };
+
+    if (search) {
+      const regex = new RegExp(search, "i");
+
+      query = {
+        ...filter,
+        $or: [
+          { name: { $regex: regex } },
+          { email: { $regex: regex } },
+          { phone: { $regex: regex } },
+        ],
+      };
+    }
+
+    const users = await User.find(query)
+      .sort({ createdAt: -1 })
+      .select("-password");
+
+    return users;
+  },
+  // ! get user stats
+  getUserStats: async () => {
+    const totalUsers = await User.countDocuments();
+
+    return {
+      totalUsers,
+    };
   },
   promoteUserRole: async (id: string, newRole: string) => {
     return User.findByIdAndUpdate(id, { role: newRole }, { new: true }).select(

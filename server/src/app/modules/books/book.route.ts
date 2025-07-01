@@ -17,6 +17,14 @@ router.post(
 // get all books
 router.get("/", BookController.getAllBooks);
 
+// get book stats
+router.get(
+  "/stats",
+  authenticate,
+  authorize("admin"),
+  BookController.getBookStats
+);
+
 // get single book
 router.get("/:bookId", BookController.getSingleBook);
 

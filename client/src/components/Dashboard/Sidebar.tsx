@@ -15,7 +15,7 @@ const Sidebar = () => {
       ? [
           { href: "/dashboard/admin", label: "Dashboard" },
           { href: "/dashboard/store/books", label: "Books" },
-          { href: "/dashboard/admin/orders", label: "Orders" },
+          { href: "/dashboard/store/orders", label: "Orders" },
           { href: "/dashboard/admin/users", label: "Users" },
         ]
       : [
@@ -25,7 +25,7 @@ const Sidebar = () => {
         ];
 
   return (
-    <aside className="w-64 bg-white shadow-md">
+    <aside className="w-1/5 bg-white shadow-md">
       <div className="p-4 text-2xl font-bold text-blue-600 border-b">
         Dashboard
       </div>

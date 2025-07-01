@@ -24,6 +24,13 @@ router.get(
   authorize("admin", "store-manager"),
   OrderController.getAllOrders
 );
+// ! Order Statics
+router.get(
+  "/stats",
+  authenticate,
+  authorize("admin", "store-manager"),
+  OrderController.getOrderStats
+);
 // ! Get Single Order (Only logged-in users)
 router.get("/:orderId", authenticate, OrderController.getSingleOrder);
 

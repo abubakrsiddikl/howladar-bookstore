@@ -2,9 +2,9 @@
 
 import { axiosSecure } from "@/lib/axios";
 import { useEffect, useState } from "react";
-import { IOrder } from "@/types/order"; // 
+import { IOrder } from "@/types/order"; //
 
-export const useOrders = (search: string, status: string) => {
+export const useOrders = (search: string, status: string, limit: string) => {
   const [orders, setOrders] = useState<IOrder[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -13,7 +13,7 @@ export const useOrders = (search: string, status: string) => {
       setLoading(true);
       try {
         const res = await axiosSecure.get("/order", {
-          params: { search, status },
+          params: { search, status, limit },
         });
         setOrders(res.data.data);
       } catch (error) {
@@ -24,7 +24,7 @@ export const useOrders = (search: string, status: string) => {
     };
 
     fetchOrders();
-  }, [search, status]);
+  }, [search, status, limit]);
 
   return { orders, loading };
 };

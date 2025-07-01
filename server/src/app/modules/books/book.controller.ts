@@ -37,6 +37,24 @@ export const BookController = {
     });
   },
 
+  // ! get book stats
+  getBookStats: async (req: Request, res: Response) => {
+    try {
+      const stats = await BookService.getBookStats();
+
+      res.status(200).json({
+        success: true,
+        message: "Book stats fetched successfully",
+        data: stats,
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to fetch book stats",
+        error,
+      });
+    }
+  },
   // ! get single book
   getSingleBook: async (req: Request, res: Response) => {
     const id = req.params.bookId;
