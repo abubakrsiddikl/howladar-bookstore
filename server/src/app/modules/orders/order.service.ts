@@ -56,7 +56,6 @@ export const OrderService = {
       (sum, order) => sum + order.totalAmount,
       0
     );
-    console.log(typeof totalSales);
 
     return {
       totalOrders,

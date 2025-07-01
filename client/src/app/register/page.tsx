@@ -31,7 +31,7 @@ export default function RegisterPage() {
   const onSubmit = async (data: RegisterInput) => {
     try {
       setServerError("");
-      console.log(data);
+      // console.log(data);
       const res = await axiosSecure.post("/auth/register", data);
       if (res.data.success) {
         toast.success("Your account create successfull");
@@ -41,7 +41,7 @@ export default function RegisterPage() {
       if (error instanceof Error) {
         setServerError(error.message || "Something went wrong");
       } else {
-        console.log("Unexpected error", error);
+        // console.log("Unexpected error", error);
       }
     }
   };

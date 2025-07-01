@@ -6,7 +6,7 @@ import { useSearchParams } from "next/navigation";
 export default function OrderSuccessPage() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId");
-  console.log(orderId);
+  // console.log(orderId);
 
   return (
     <div className="min-h-[70vh] flex flex-col items-center justify-center px-4">

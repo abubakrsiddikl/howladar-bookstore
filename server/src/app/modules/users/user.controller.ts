@@ -5,7 +5,6 @@ export const UserController = {
   // !get user profile
   getUserProfile: async (req: Request, res: Response) => {
     try {
-      console.log("get user profile", req.user?.userId);
       const user = await UserService.getUserById(req.user!.userId);
       if (!user) {
         res.status(404).json({ message: "User not found" });
@@ -44,7 +43,6 @@ export const UserController = {
     if (!currentUserId) {
       res.json({ success: false, message: "unauthorized access" });
     }
-    console.log({ search });
     try {
       const users = await UserService.getAllUsers(
         currentUserId as string,

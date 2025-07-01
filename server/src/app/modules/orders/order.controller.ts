@@ -144,7 +144,6 @@ export const OrderController = {
     try {
       const { search, status, limit } = req.query;
       const queryLimit = Number(limit) || 10;
-      console.log({ search, status, queryLimit });
 
       const orders = await OrderService.getAllOrders(
         search as string,
@@ -206,7 +205,6 @@ export const OrderController = {
     const orderId = req.params.orderId;
 
     const order = await OrderService.getSingleOrder(orderId);
-    console.log("signle order");
 
     if (!order) {
       res.status(404).json({ message: "Order not found" });
@@ -224,7 +222,6 @@ export const OrderController = {
   updateOrderStatus: async (req: Request, res: Response) => {
     const orderId = req.params.orderId;
     const { status: updatedStatus } = req.body;
-    console.log({ orderId, updatedStatus });
 
     if (!updatedStatus) {
       res.status(400).json({ message: "Status is required" });

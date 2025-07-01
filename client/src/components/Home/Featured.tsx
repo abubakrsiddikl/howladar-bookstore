@@ -7,7 +7,7 @@ import React from "react";
 export default function Featured() {
   const { books } = useBooks("");
   const featureBooks = books.slice(1, 5);
-  console.log(featureBooks);
+  // console.log(featureBooks);
   return (
     <div>
       {/* Featured Books */}

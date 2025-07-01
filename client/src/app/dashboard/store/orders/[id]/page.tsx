@@ -11,7 +11,7 @@ const StoreOrderDetailsPage = () => {
 
   if (loading) return <p>Loading...</p>;
   if (!order) return <p>Order not found!</p>;
-  console.log(order);
+  // console.log(order);
 
   return (
     <div className="p-6">

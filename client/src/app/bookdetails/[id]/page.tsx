@@ -8,7 +8,7 @@ import BookCard from "@/app/books/components/BookCard";
 
 export default function BookDetailsPage() {
   const { id } = useParams();
-  console.log(id);
+  // console.log(id);
   const { book, similarBooks, loading } = useBookDetails(id);
 
   if (loading) {

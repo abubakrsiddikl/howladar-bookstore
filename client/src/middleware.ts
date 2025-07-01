@@ -30,7 +30,7 @@ export async function middleware(request: NextRequest) {
   }
 
   const decoded = await verifyToken(token);
-  console.log("decoded value", decoded);
+  // console.log("decoded value", decoded);
 
   if (!decoded) {
     return NextResponse.redirect(new URL("/login", request.url));

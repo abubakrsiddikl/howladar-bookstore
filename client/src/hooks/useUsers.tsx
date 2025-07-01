@@ -7,7 +7,6 @@ import Swal from "sweetalert2";
 export const useUsers = (search: string) => {
   const [users, setUsers] = useState<IUser[]>([]);
   const [loading, setLoading] = useState(false);
-  console.log({ search });
   const fetchUsers = useCallback(async () => {
     setLoading(true);
     try {

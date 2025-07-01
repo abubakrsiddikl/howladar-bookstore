@@ -14,7 +14,7 @@ const Navbar = () => {
   const pathname = usePathname();
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
-  console.log("navbar",user)
+  // console.log("navbar",user)
   const handleLogout = async () => {
     await logout();
     toast.success("Logout successfull");

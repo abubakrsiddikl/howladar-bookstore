@@ -72,7 +72,7 @@ const BookForm = ({ id, defaultValues }: BookFormProps) => {
 
   //  Submit Handler
   const onSubmit = async (data: BookFormData) => {
-    console.log(typeof data.price);
+    
     try {
       const imageFile = data.coverImage[0];
       const imageUrl = await uploadImage(imageFile);

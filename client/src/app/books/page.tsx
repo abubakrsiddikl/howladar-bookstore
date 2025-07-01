@@ -9,7 +9,7 @@ export default function BooksPage() {
   if (loading) {
     return <LoadingSppiner></LoadingSppiner>;
   }
-  console.log(books);
+  // console.log(books);
   return (
     <div className="px-4 py-6">
       <h1 className="text-2xl font-bold text-center mb-6">📚 আমাদের বইসমূহ</h1>
