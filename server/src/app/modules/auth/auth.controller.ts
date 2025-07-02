@@ -18,16 +18,14 @@ export const AuthController = {
     try {
       const token = req.cookies.token;
       if (!token) {
-        return res
-          .status(401)
-          .json({ success: false, message: "Unauthorized" });
+        res.status(401).json({ success: false, message: "Unauthorized" });
+        return;
       }
 
       const user = await AuthService.getUserFromToken(token);
       if (!user) {
-        return res
-          .status(401)
-          .json({ success: false, message: "Invalid token" });
+        res.status(401).json({ success: false, message: "Invalid token" });
+        return;
       }
 
       res.json({ success: true, isLoggedIn: true, user });
