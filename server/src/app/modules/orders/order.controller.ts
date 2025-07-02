@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
 import { startSession, Types } from "mongoose";
 import { OrderService } from "./order.service";
 import { IOrderItem } from "./order.interface";

@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
 import { BookService } from "./book.service";
 
 export const BookController = {
