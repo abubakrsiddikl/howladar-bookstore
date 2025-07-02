@@ -41,20 +41,23 @@ export const AuthController = {
       res.cookie("token", token, {
         httpOnly: true,
         secure: config.env === "production",
-        sameSite: "lax",
+        sameSite: config.env === "production" ? "none" : "lax",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
+
       res.json({ success: true, message: "User login successfull", user });
     } catch (error: any) {
       res.status(401).json({ success: false, message: error.message });
     }
   },
   logoutUser: (req: Request, res: Response) => {
-    res.clearCookie("token", {
+    res.cookie("token", {
       httpOnly: true,
       secure: config.env === "production",
-      sameSite: "lax",
+      sameSite: config.env === "production" ? "none" : "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
+
     res.json({ success: true, message: "Logged out successfully" });
   },
   googleAuthRedirect: (req: Request, res: Response) => {
@@ -74,7 +77,7 @@ export const AuthController = {
       .cookie("token", token, {
         httpOnly: true,
         secure: config.env === "production",
-        sameSite: "lax",
+        sameSite: config.env === "production" ? "none" : "lax",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       })
       .redirect(`${config.client_url}/dashboard`);
