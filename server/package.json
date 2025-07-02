@@ -2,12 +2,11 @@
   "name": "server",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/server.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only ./src/server.ts",
     "build": "tsc",
-    "start": "node dist/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node dist/server.js"
   },
   "keywords": [],
   "author": "",
@@ -24,9 +23,7 @@
     "lodash": "^4.17.21",
     "mongoose": "^8.16.0",
     "nodemailer": "^7.0.4",
-    "zod": "^3.25.67"
-  },
-  "devDependencies": {
+    "zod": "^3.25.67",
     "@types/bcrypt": "^5.0.2",
     "@types/cookie-parser": "^1.4.9",
     "@types/cors": "^2.8.19",
@@ -34,7 +31,9 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/lodash": "^4.17.20",
     "@types/node": "^24.0.10",
-    "@types/nodemailer": "^6.4.17",
+    "@types/nodemailer": "^6.4.17"
+  },
+  "devDependencies": {
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.8.3"
   }
