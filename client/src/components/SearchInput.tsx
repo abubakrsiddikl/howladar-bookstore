@@ -10,11 +10,11 @@ const SearchInput = () => {
   const { books, loading } = useBooks(search);
 
   return (
-    <div className="relative max-w-md mx-auto">
+    <div className="  shadow p-5 z-50 ">
       <input
         type="text"
         placeholder="🔍 খুঁজুন বইয়ের নাম, লেখক বা genre"
-        className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring focus:ring-blue-500"
+        className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring focus:ring-blue-500  bg-white"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />

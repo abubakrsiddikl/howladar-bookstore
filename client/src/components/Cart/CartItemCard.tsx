@@ -3,49 +3,71 @@
 import { CartItem } from "@/context/CartContext";
 import { useCartContext } from "@/hooks/useCartContext";
 import Image from "next/image";
+import { FaPlus, FaMinus, FaTrash } from "react-icons/fa";
 
 export default function CartItemCard({ item }: { item: CartItem }) {
   const { updateQuantity, removeFromCart } = useCartContext();
 
   return (
-    <div className="flex gap-4 border p-4 rounded-md shadow">
-      <Image
-        src={item.book.coverImage}
-        alt={item.book.title}
-        width={80}
-        height={24}
-        className="object-contain rounded"
-      />
-      <div className="flex-1">
-        <h3 className="text-lg font-semibold">{item.book.title}</h3>
-        <p className="text-gray-600">৳ {item.book.price}</p>
-        <div className="flex items-center gap-2 mt-2">
+    <tr className="border-b ">
+      {/* Details */}
+      <td className="flex items-center gap-4 p-4">
+        <Image
+          src={item.book.coverImage}
+          alt={item.book.title}
+          width={60}
+          height={80}
+          className="object-contain border rounded"
+        />
+        <div>
+          <h3 className="font-semibold text-[#1a0dab] hover:underline">
+            {item.book.title}
+          </h3>
+          <p className="text-sm text-gray-500">N/A</p>
+          <p className="text-sm text-gray-500">
+            Unit price: Tk. {item.book.price}
+          </p>
+        </div>
+      </td>
+
+      {/* Quantity */}
+      <td className="text-center">
+        <div className="flex items-center justify-center gap-2">
           <button
             onClick={() =>
               item.quantity > 1 &&
               updateQuantity(item._id || item.book._id, item.quantity - 1)
             }
-            className="px-2 py-1 border rounded"
+            className="border px-2 py-1 rounded hover:bg-gray-200 cursor-pointer"
           >
-            -
+            <FaMinus size={12} />
           </button>
-          <span>{item.quantity}</span>
+          <span className="min-w-[20px] text-center">{item.quantity}</span>
           <button
             onClick={() =>
               updateQuantity(item._id || item.book._id, item.quantity + 1)
             }
-            className="px-2 py-1 border rounded"
+            className="border px-2 py-1 rounded hover:bg-gray-200 cursor-pointer"
           >
-            +
+            <FaPlus size={12} />
           </button>
         </div>
+      </td>
+
+      {/* Total */}
+      <td className="text-center font-semibold">
+        Tk. {item.book.price * item.quantity}
+      </td>
+
+      {/* Action */}
+      <td className="text-center">
         <button
           onClick={() => removeFromCart(item._id || item.book._id)}
-          className="text-red-500 mt-2"
+          className="text-red-500 hover:text-red-700 cursor-pointer"
         >
-          Remove
+          <FaTrash />
         </button>
-      </div>
-    </div>
+      </td>
+    </tr>
   );
 }

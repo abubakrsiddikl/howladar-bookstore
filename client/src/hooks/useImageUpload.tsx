@@ -30,9 +30,8 @@ export const useImageUpload = () => {
       } else {
         throw new Error("Image upload failed");
       }
-    } catch (err: any) {
-      setError(err.message || "Unknown error");
-      throw err;
+    } catch {
+      setError("Unknown error");
     } finally {
       setUploading(false);
     }

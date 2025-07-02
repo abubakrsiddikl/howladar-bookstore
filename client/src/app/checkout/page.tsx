@@ -59,7 +59,7 @@ export default function CheckoutPage() {
         router.push(res.data.paymentUrl);
       } else {
         clearCart();
-        router.push(`/ordersuccess?orderId=${res.data.data?.orderId}`);
+        router.push(`/ordersuccess/${res.data.data?.orderId}`);
       }
     } catch (error) {
       console.error(error);

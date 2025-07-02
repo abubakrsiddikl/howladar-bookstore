@@ -4,7 +4,7 @@ import { useParams } from "next/navigation";
 
 import Image from "next/image";
 import { useBookDetails } from "@/hooks/useBookDetails";
-import BookCard from "@/app/books/components/BookCard";
+import BookCard from "@/components/Books/BookCard";
 
 export default function BookDetailsPage() {
   const { id } = useParams();

@@ -1,12 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 
 export default function OrderSuccessPage() {
-  const searchParams = useSearchParams();
-  const orderId = searchParams.get("orderId");
-  // console.log(orderId);
+  const { id } = useParams();
+  // console.log({id});
 
   return (
     <div className="min-h-[70vh] flex flex-col items-center justify-center px-4">
@@ -18,9 +17,9 @@ export default function OrderSuccessPage() {
           ধন্যবাদ আপনাকে। আপনার অর্ডার সফলভাবে সম্পন্ন হয়েছে।
         </p>
 
-        {orderId && (
+        {id && (
           <p className="mb-4 text-sm text-gray-600">
-            🎯 <strong>আপনার অর্ডার আইডি : </strong># {orderId}
+            🎯 <strong>আপনার অর্ডার আইডি : </strong># {id}
           </p>
         )}
 

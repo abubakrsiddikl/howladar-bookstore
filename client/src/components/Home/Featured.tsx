@@ -1,35 +1,29 @@
 "use client";
-import BookCard from "@/app/books/components/BookCard";
+
 import { useBooks } from "@/hooks/useBooks";
-import Link from "next/link";
-import React from "react";
 
-export default function Featured() {
-  const { books } = useBooks("");
-  const featureBooks = books.slice(1, 5);
-  // console.log(featureBooks);
+import LoadingSppiner from "@/components/LoadingSppiner";
+import BookCard from "@/components/Books/BookCard";
+
+export default function BooksPage() {
+  const { books, loading } = useBooks("");
+  if (loading) {
+    return <LoadingSppiner></LoadingSppiner>;
+  }
+  // console.log(books);
   return (
-    <div>
-      {/* Featured Books */}
-      <section className="py-12 px-4 w-11/12 mx-auto">
-        <h2 className="text-2xl font-bold mb-6 text-center">
-          ✨ ফিচারড বইসমূহ
-        </h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
-          {featureBooks.map((book) => (
-            <BookCard key={book._id} {...book}></BookCard>
-          ))}
-        </div>
-
-        <div className="text-center mt-10">
-          <Link href="/books">
-            <button className="bg-blue-700 text-white px-6 py-2 rounded hover:bg-blue-800">
-              সব বই দেখুন
-            </button>
-          </Link>
-        </div>
-      </section>
+    <div className="px-4 py-6">
+      <h1 className="text-2xl font-bold text-center mb-6">📚 আমাদের বইসমূহ</h1>
+      {/* Books Grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2 md:gap-5">
+        {books.length > 0 ? (
+          books.map((book) => <BookCard key={book._id} {...book}></BookCard>)
+        ) : (
+          <p className="col-span-3 text-center text-gray-600">
+            😔 কোনো বই পাওয়া যায়নি।
+          </p>
+        )}
+      </div>
     </div>
   );
 }

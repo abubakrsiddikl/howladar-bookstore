@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import toast from "react-hot-toast";
 
-import { FaPlus } from "react-icons/fa";
+import { IoCartOutline } from "react-icons/io5";
 type BookCardProps = {
   _id: string;
   title: string;
@@ -35,30 +35,35 @@ const BookCard = ({
   };
   return (
     <div className="bg-white shadow-md hover:shadow-2xl transition-shadow duration-300 rounded-lg">
-      <Link href={`/bookdetails/${_id}`}>
-        <div className="relative w-full h-64">
-          <Image src={coverImage} alt={title} fill className="object-contain" />
-        </div>
-        {/* card info */}
-        <div className="py-2 pl-7">
-          <h3 className="text-sm font-semibold line-clamp-2">{title}</h3>
-          <p className="text-gray-500 text-sm ">by {author}</p>
-          <p className="text-[#FF8600] font-semibold text-2xl ">৳ {price}</p>
-          <p
-            className={`text-sm ${
-              stock > 0 ? "text-green-600" : "text-red-500"
-            }`}
-          >
-            {stock > 0 ? "In Stock" : "Out of Stock"}
-          </p>
-        </div>
-      </Link>
+      <div className="relative w-full h-64">
+        <Image
+          src={coverImage}
+          alt={title}
+          fill
+          className="pt-1 px-1 md:px-2 md:pt-2"
+        />
+      </div>
+      {/* card info */}
+      <div className="py-2 pl-7">
+        {/* title */}
+        <Link href={`/bookdetails/${_id}`}>
+          <h3 className="text-sm font-semibold hover:text-[#FF8600] line-clamp-1">{title}</h3>
+        </Link>
 
-      <div className="px-4 pb-4">
+        <p className="text-gray-500 text-sm line-clamp-1">by {author}</p>
+        <p className="text-[#FF8600] font-semibold text-2xl ">৳ {price}</p>
+        <p
+          className={`text-sm ${stock > 0 ? "text-green-600" : "text-red-500"}`}
+        >
+          {stock > 0 ? "Product in stock" : "Out of Stock"}
+        </p>
+      </div>
+
+      <div className="px-2 pb-4">
         <button
           onClick={handleAddToCart}
           disabled={isOutOfStock}
-          className={`w-full px-4 py-2 rounded-lg text-lg flex justify-center items-center gap-2 transition ${
+          className={`w-full p-1 md:px-4 md:py-1 rounded-lg text-lg flex justify-center items-center gap-2 transition ${
             isOutOfStock
               ? "bg-gray-300 text-gray-500 cursor-not-allowed"
               : "bg-[#FF8600] text-white hover:bg-[#e67600] cursor-pointer"
@@ -68,7 +73,7 @@ const BookCard = ({
             "Out of Stock"
           ) : (
             <>
-              Add to Cart <FaPlus />
+              <IoCartOutline></IoCartOutline> Add to Cart
             </>
           )}
         </button>
