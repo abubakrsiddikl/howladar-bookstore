@@ -51,11 +51,10 @@ export const AuthController = {
     }
   },
   logoutUser: (req: Request, res: Response) => {
-    res.cookie("token", {
+    res.clearCookie("token", {
       httpOnly: true,
       secure: config.env === "production",
       sameSite: config.env === "production" ? "none" : "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     res.json({ success: true, message: "Logged out successfully" });
