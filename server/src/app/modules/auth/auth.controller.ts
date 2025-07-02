@@ -40,8 +40,8 @@ export const AuthController = {
       );
       res.cookie("token", token, {
         httpOnly: true,
-        secure: true,
-        sameSite: "none",
+        secure: config.env === "production",
+        sameSite: config.env === "production" ? "none" : "lax",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
@@ -53,8 +53,8 @@ export const AuthController = {
   logoutUser: (req: Request, res: Response) => {
     res.clearCookie("token", {
       httpOnly: true,
-      secure: true,
-      sameSite: "none",
+      secure: config.env === "production",
+      sameSite: config.env === "production" ? "none" : "lax",
     });
 
     res.json({ success: true, message: "Logged out successfully" });
@@ -75,8 +75,8 @@ export const AuthController = {
     res
       .cookie("token", token, {
         httpOnly: true,
-        secure: true,
-        sameSite: "none",
+        secure: config.env === "production",
+        sameSite: config.env === "production" ? "none" : "lax",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       })
       .redirect(`${config.client_url}/dashboard`);
