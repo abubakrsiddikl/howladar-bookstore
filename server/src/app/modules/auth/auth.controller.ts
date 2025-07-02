@@ -3,6 +3,7 @@ import { AuthService } from "./auth.service";
 import config from "../../../config";
 
 export const AuthController = {
+  // 🔸 Register
   registerUser: async (req: Request, res: Response) => {
     try {
       const data = await AuthService.registerUser(req.body);
@@ -11,19 +12,22 @@ export const AuthController = {
       res.status(400).json({ success: false, message: error.message });
     }
   },
-  // ! get current user
+
+  // 🔸 Get Current User
   getCurrentUser: async (req: Request, res: Response) => {
     try {
       const token = req.cookies.token;
       if (!token) {
-        res.status(401).json({ success: false, message: "Unauthorized" });
-        return;
+        return res
+          .status(401)
+          .json({ success: false, message: "Unauthorized" });
       }
 
       const user = await AuthService.getUserFromToken(token);
       if (!user) {
-        res.status(401).json({ success: false, message: "Invalid token" });
-        return;
+        return res
+          .status(401)
+          .json({ success: false, message: "Invalid token" });
       }
 
       res.json({ success: true, isLoggedIn: true, user });
@@ -32,40 +36,45 @@ export const AuthController = {
     }
   },
 
+  // 🔸 Login
   loginUser: async (req: Request, res: Response) => {
     try {
       const { token, user } = await AuthService.loginUser(
         req.body.email,
         req.body.password
       );
+
       res.cookie("token", token, {
         httpOnly: true,
-        secure: config.env === "production",
+        secure: config.env === "production", // ✅ Only in production
         sameSite: config.env === "production" ? "none" : "lax",
-        maxAge: 7 * 24 * 60 * 60 * 1000,
+        maxAge: 7 * 24 * 60 * 60 * 1000, // ✅ 7 Days
       });
 
-      res.json({ success: true, message: "User login successfull", user });
+      res.json({ success: true, message: "User login successful", user });
     } catch (error: any) {
       res.status(401).json({ success: false, message: error.message });
     }
   },
+
+  // 🔸 Logout ✅ Corrected
   logoutUser: (req: Request, res: Response) => {
-    res.cookie("token", {
+    res.clearCookie("token", {
       httpOnly: true,
       secure: config.env === "production",
       sameSite: config.env === "production" ? "none" : "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     res.json({ success: true, message: "Logged out successfully" });
   },
+
+  // 🔸 Google Auth Redirect
   googleAuthRedirect: (req: Request, res: Response) => {
     const redirectURL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${config.google_client_id}&redirect_uri=${config.google_redirect_uri}&response_type=code&scope=email%20profile`;
     res.redirect(redirectURL);
   },
 
-  // 🔹  callback handler
+  // 🔸 Google Callback Handler
   googleCallback: async (req: Request, res: Response) => {
     const code = req.query.code as string;
 
