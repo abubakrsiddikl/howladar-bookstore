@@ -3,7 +3,6 @@ import { AuthService } from "./auth.service";
 import config from "../../../config";
 
 export const AuthController = {
-  // 🔸 Register
   registerUser: async (req: Request, res: Response) => {
     try {
       const data = await AuthService.registerUser(req.body);
@@ -12,8 +11,7 @@ export const AuthController = {
       res.status(400).json({ success: false, message: error.message });
     }
   },
-
-  // 🔸 Get Current User
+  // ! get current user
   getCurrentUser: async (req: Request, res: Response) => {
     try {
       const token = req.cookies.token;
@@ -34,45 +32,40 @@ export const AuthController = {
     }
   },
 
-  // 🔸 Login
   loginUser: async (req: Request, res: Response) => {
     try {
       const { token, user } = await AuthService.loginUser(
         req.body.email,
         req.body.password
       );
-
       res.cookie("token", token, {
         httpOnly: true,
-        secure: config.env === "production", // ✅ Only in production
+        secure: config.env === "production",
         sameSite: config.env === "production" ? "none" : "lax",
-        maxAge: 7 * 24 * 60 * 60 * 1000, // ✅ 7 Days
+        maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
-      res.json({ success: true, message: "User login successful", user });
+      res.json({ success: true, message: "User login successfull", user });
     } catch (error: any) {
       res.status(401).json({ success: false, message: error.message });
     }
   },
-
-  // 🔸 Logout ✅ Corrected
   logoutUser: (req: Request, res: Response) => {
-    res.clearCookie("token", {
+    res.cookie("token", {
       httpOnly: true,
       secure: config.env === "production",
       sameSite: config.env === "production" ? "none" : "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     res.json({ success: true, message: "Logged out successfully" });
   },
-
-  // 🔸 Google Auth Redirect
   googleAuthRedirect: (req: Request, res: Response) => {
-    const redirectURL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${config.google_client_id}&redirect_uri=${config.google_redirect_uri}&response_type=code&scope=email%20profile`;
-    res.redirect(redirectURL);
+    const redirectURL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${config.google_client_id}&redirect_uri=${config.google_redirect_uri}&response_type=code&scope=email%20profile;
+    res.redirect(redirectURL)`;
   },
 
-  // 🔸 Google Callback Handler
+  // 🔹  callback handler
   googleCallback: async (req: Request, res: Response) => {
     const code = req.query.code as string;
 
