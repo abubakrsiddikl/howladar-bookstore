@@ -39,7 +39,7 @@ export const AuthController = {
         req.body.password
       );
       res.cookie("token", token, {
-        httpOnly: false,
+        httpOnly: true,
         secure: config.env === "production",
         sameSite: config.env === "production" ? "none" : "lax",
         maxAge: 7 * 24 * 60 * 60 * 1000,
@@ -52,7 +52,7 @@ export const AuthController = {
   },
   logoutUser: (req: Request, res: Response) => {
     res.clearCookie("token", {
-      httpOnly: false,
+      httpOnly: true,
       secure: config.env === "production",
       sameSite: config.env === "production" ? "none" : "lax",
     });
@@ -60,8 +60,8 @@ export const AuthController = {
     res.json({ success: true, message: "Logged out successfully" });
   },
   googleAuthRedirect: (req: Request, res: Response) => {
-    const redirectURL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${config.google_client_id}&redirect_uri=${config.google_redirect_uri}&response_type=code&scope=email%20profile;
-    res.redirect(redirectURL)`;
+    const redirectURL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${config.google_client_id}&redirect_uri=${config.google_redirect_uri}&response_type=code&scope=email%20profile`;
+    res.redirect(redirectURL);
   },
 
   // 🔹  callback handler
@@ -74,11 +74,11 @@ export const AuthController = {
 
     res
       .cookie("token", token, {
-        httpOnly: false,
+        httpOnly: true,
         secure: config.env === "production",
         sameSite: config.env === "production" ? "none" : "lax",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       })
-      .redirect(`${config.client_url}/dashboard`);
+      .redirect(`${config.client_url}`);
   },
 };
